@@ -21,8 +21,8 @@ import java.util.List;
 import gr.kalymnos.skemelio.p2pchat.R;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.WifiP2pUtilities;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.WiFiDirectBroadcastReceiver;
-import gr.kalymnos.skemelio.p2pchat.mvc_views.DeviceListViewMvc;
-import gr.kalymnos.skemelio.p2pchat.mvc_views.DeviceListViewMvcImp;
+import gr.kalymnos.skemelio.p2pchat.mvc_views.device_list.DeviceListViewMvc;
+import gr.kalymnos.skemelio.p2pchat.mvc_views.device_list.DeviceListViewMvcImp;
 
 import static android.net.wifi.p2p.WifiP2pManager.Channel;
 

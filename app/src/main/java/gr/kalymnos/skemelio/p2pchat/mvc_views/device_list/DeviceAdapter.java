@@ -1,4 +1,4 @@
-package gr.kalymnos.skemelio.p2pchat.mvc_views;
+package gr.kalymnos.skemelio.p2pchat.mvc_views.device_list;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

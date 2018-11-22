@@ -1,6 +1,8 @@
-package gr.kalymnos.skemelio.p2pchat.mvc_views;
+package gr.kalymnos.skemelio.p2pchat.mvc_views.device_list;
 
 import java.util.List;
+
+import gr.kalymnos.skemelio.p2pchat.mvc_views.ViewMvcWithToolbar;
 
 public interface DeviceListViewMvc extends ViewMvcWithToolbar {
 
