@@ -21,7 +21,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginTop="16dp"
         android:text="Discovered devices"
-        android:textSize="24sp"
+        android:textSize="28sp"
         android:textColor="@color/primaryTextColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />

@@ -2,6 +2,8 @@ package gr.kalymnos.skemelio.p2pchat.mvc_controllers;
 
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import gr.kalymnos.skemelio.p2pchat.R;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.WiFiDirectBroadcastReceiver;
@@ -21,6 +26,8 @@ import static android.net.wifi.p2p.WifiP2pManager.Channel;
 public class DeviceListActivity extends AppCompatActivity implements DeviceListViewMvc.OnDeviceClickListener, WifiP2pManager.ChannelListener {
 
     private DeviceListViewMvc viewMvc;
+
+    private WifiP2pDeviceList deviceList;
 
     private WifiP2pManager manager;
     private Channel channel;
@@ -87,10 +94,31 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     @Override
     public void onDeviceClicked(int position) {
         // TODO: Must implement
+        if (deviceListIncludesItems()) {
+            Toast.makeText(this, "Clicked item " + position, Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
         this.isWifiP2pEnabled = isWifiP2pEnabled;
+    }
+
+    public void setDeviceList(WifiP2pDeviceList deviceList) {
+        this.deviceList = deviceList;
+    }
+
+    public void updateDeviceList() {
+        if (deviceListIncludesItems()) {
+            List<String> deviceNames = new ArrayList<>();
+            for (WifiP2pDevice device : deviceList.getDeviceList()) {
+                deviceNames.add(device.deviceName);
+            }
+            viewMvc.bindDevices(deviceNames);
+        }
+    }
+
+    private boolean deviceListIncludesItems() {
+        return deviceList != null && deviceList.getDeviceList() != null && deviceList.getDeviceList().size() > 0;
     }
 
     private void initializeViewMvc() {
