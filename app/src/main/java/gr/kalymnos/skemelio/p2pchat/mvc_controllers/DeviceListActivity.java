@@ -34,6 +34,17 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
         addActionsToIntentFilter();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(receiver, filter);
+    }
+    
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
 
     @Override
     public void onDeviceClicked(int position) {
