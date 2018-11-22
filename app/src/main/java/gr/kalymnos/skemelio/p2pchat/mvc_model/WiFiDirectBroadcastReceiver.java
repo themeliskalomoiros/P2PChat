@@ -8,12 +8,19 @@ import android.net.wifi.p2p.WifiP2pManager;
 import gr.kalymnos.skemelio.p2pchat.mvc_controllers.DeviceListActivity;
 
 import static android.net.wifi.p2p.WifiP2pManager.Channel;
+import static android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 
 public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
 
     private WifiP2pManager manager;
     private Channel channel;
     private DeviceListActivity activity;
+
+    private PeerListListener peerListListener = (deviceList) -> {
+        activity.setDeviceList(deviceList);
+        activity.updateDeviceList();
+    };
+
 
     public WiFiDirectBroadcastReceiver(WifiP2pManager manager, Channel channel,
                                        DeviceListActivity activity) {
@@ -37,11 +44,13 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             }
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             // Call WifiP2pManager.requestPeers() to get a list of current peers
+            manager.requestPeers(channel, peerListListener);
         } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
             // Respond to new connection or disconnections
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // Respond to this device's wifi state changing
         }
-
     }
+
+
 }
