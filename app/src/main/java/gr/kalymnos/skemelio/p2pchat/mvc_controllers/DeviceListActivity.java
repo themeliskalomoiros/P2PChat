@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.kalymnos.skemelio.p2pchat.R;
-import gr.kalymnos.skemelio.p2pchat.mvc_model.ConnectionErrorText;
+import gr.kalymnos.skemelio.p2pchat.mvc_model.WifiP2pUtilities;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.WiFiDirectBroadcastReceiver;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.DeviceListViewMvc;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.DeviceListViewMvcImp;
@@ -45,7 +45,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
 
         @Override
         public void onFailure(int reason) {
-            Toast.makeText(DeviceListActivity.this, ConnectionErrorText.getReasonText(reason), Toast.LENGTH_SHORT).show();
+            Toast.makeText(DeviceListActivity.this, WifiP2pUtilities.getReasonText(reason), Toast.LENGTH_SHORT).show();
         }
     };
 
@@ -147,7 +147,8 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
         if (deviceListIncludesItems()) {
             List<String> deviceNames = new ArrayList<>();
             for (WifiP2pDevice device : deviceList.getDeviceList()) {
-                deviceNames.add(device.deviceName);
+                deviceNames.add(device.deviceName + "\n Status: "
+                        + WifiP2pUtilities.getDeviceStatus(device.status));
             }
             viewMvc.bindDevices(deviceNames);
         }
