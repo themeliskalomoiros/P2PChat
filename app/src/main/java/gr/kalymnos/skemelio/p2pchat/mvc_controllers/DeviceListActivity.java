@@ -95,8 +95,22 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     public void onDeviceClicked(int position) {
         // TODO: Must implement
         if (deviceListIncludesItems()) {
-            Toast.makeText(this, "Clicked item " + position, Toast.LENGTH_SHORT).show();
+            WifiP2pDevice device = getClickedDeviceFromList(position);
+            if (device != null) {
+                showToast(device.deviceName);
+            }
+
         }
+    }
+
+    private WifiP2pDevice getClickedDeviceFromList(int position) {
+        int iterations = 0;
+        for (WifiP2pDevice device : deviceList.getDeviceList()) {
+            if (position == iterations++) {
+                return device;
+            }
+        }
+        return null;
     }
 
     public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
