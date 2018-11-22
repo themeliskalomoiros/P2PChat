@@ -22,13 +22,21 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
 
     private BroadcastReceiver receiver;
     private final IntentFilter filter = new IntentFilter();
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initializeViewMvc();
         setSupportActionBar(viewMvc.getToolbar());
         setContentView(viewMvc.getRootView());
+    }
+
+    private void addActionsToFilter() {
+        filter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        filter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        filter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        filter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
     }
 
     @Override
