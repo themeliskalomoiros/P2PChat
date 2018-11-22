@@ -61,7 +61,23 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.discover_peers:
-                Toast.makeText(this, "Menu item clicked", Toast.LENGTH_SHORT).show();
+                if (!isWifiP2pEnabled) {
+                    showToast("Wifi p2p is not enabled!");
+                    return true;
+                }
+
+                manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        showToast("Discovery Initiated");
+                    }
+
+                    @Override
+                    public void onFailure(int reasonCode) {
+                        showLongToast("Discovery failed, reason code: " + reasonCode);
+                    }
+                });
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -105,13 +121,19 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     public void onChannelDisconnected() {
         // we will try once more
         if (manager != null && !retryChannel) {
-            Toast.makeText(this, "Channel lost. Trying again", Toast.LENGTH_LONG).show();
+            showToast("Channel lost. Trying again");
             retryChannel = true;
             manager.initialize(this, getMainLooper(), this);
         } else {
-            Toast.makeText(this,
-                    "Severe! Channel is probably lost premanently. Try Disable/Re-Enable P2P.",
-                    Toast.LENGTH_LONG).show();
+            showLongToast("Severe! Channel is probably lost premanently. Try Disable/Re-Enable P2P.");
         }
+    }
+
+    private void showToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showLongToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
 }
