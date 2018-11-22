@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.kalymnos.skemelio.p2pchat.R;
+import gr.kalymnos.skemelio.p2pchat.mvc_model.ConnectionErrorText;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.WiFiDirectBroadcastReceiver;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.DeviceListViewMvc;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.DeviceListViewMvcImp;
@@ -33,6 +34,18 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     private Channel channel;
     private boolean retryChannel = false;
     private boolean isWifiP2pEnabled = false;
+
+    private WifiP2pManager.ActionListener deviceConnectionListener = new WifiP2pManager.ActionListener() {
+        @Override
+        public void onSuccess() {
+            Toast.makeText(DeviceListActivity.this, "Connected to device!", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onFailure(int reason) {
+            Toast.makeText(DeviceListActivity.this, ConnectionErrorText.getReasonText(reason), Toast.LENGTH_SHORT).show();
+        }
+    };
 
     private BroadcastReceiver receiver;
     private final IntentFilter filter = new IntentFilter();
@@ -93,7 +106,6 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
 
     @Override
     public void onDeviceClicked(int position) {
-        // TODO: Must implement
         if (deviceListIncludesItems()) {
             WifiP2pDevice device = getClickedDeviceFromList(position);
             if (device != null) {
