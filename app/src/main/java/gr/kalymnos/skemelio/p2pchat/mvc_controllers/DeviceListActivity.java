@@ -2,6 +2,8 @@ package gr.kalymnos.skemelio.p2pchat.mvc_controllers;
 
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
+import android.net.wifi.WpsInfo;
+import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -35,10 +37,10 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     private boolean retryChannel = false;
     private boolean isWifiP2pEnabled = false;
 
-    private WifiP2pManager.ActionListener deviceConnectionListener = new WifiP2pManager.ActionListener() {
+    private WifiP2pManager.ActionListener connectionInitiationListener = new WifiP2pManager.ActionListener() {
         @Override
         public void onSuccess() {
-            Toast.makeText(DeviceListActivity.this, "Connected to device!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(DeviceListActivity.this, "Initiated connection.", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -109,9 +111,17 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
         if (deviceListIncludesItems()) {
             WifiP2pDevice device = getClickedDeviceFromList(position);
             if (device != null) {
-                showToast(device.deviceName);
+                connectTo(device);
             }
+        }
+    }
 
+    private void connectTo(WifiP2pDevice device) {
+        if (manager != null && channel != null) {
+            WifiP2pConfig config = new WifiP2pConfig();
+            config.deviceAddress = device.deviceAddress;
+            config.wps.setup = WpsInfo.PBC;
+            manager.connect(channel, config, connectionInitiationListener);
         }
     }
 
