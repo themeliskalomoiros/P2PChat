@@ -11,6 +11,8 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
 
     private DeviceListViewMvc viewMvc;
 
+    private boolean isWifiP2pEnabled = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,5 +28,9 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     private void initializeViewMvc() {
         viewMvc = new DeviceListViewMvcImp(LayoutInflater.from(this), null);
         viewMvc.setOnDeviceClickListener(this);
+    }
+
+    public void setIsWifiP2pEnabled(boolean isWifiP2pEnabled) {
+        this.isWifiP2pEnabled = isWifiP2pEnabled;
     }
 }
