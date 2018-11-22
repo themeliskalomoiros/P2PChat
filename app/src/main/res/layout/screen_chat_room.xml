@@ -54,6 +54,7 @@
         app:layout_constraintTop_toBottomOf="@+id/recyclerview" />
 
     <ImageView
+        android:id="@+id/smilley"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"

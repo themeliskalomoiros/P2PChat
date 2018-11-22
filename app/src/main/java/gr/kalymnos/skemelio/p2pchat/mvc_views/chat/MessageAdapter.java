@@ -13,12 +13,12 @@ import java.util.List;
 import gr.kalymnos.skemelio.p2pchat.R;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.Message;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
+class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 
     private Context context;
     private List<Message> messages;
 
-    public MessageAdapter(Context context) {
+    MessageAdapter(Context context) {
         this.context = context;
     }
 
