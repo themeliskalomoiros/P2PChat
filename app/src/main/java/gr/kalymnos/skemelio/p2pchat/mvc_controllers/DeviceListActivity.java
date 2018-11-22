@@ -6,8 +6,12 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
+import gr.kalymnos.skemelio.p2pchat.R;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.WiFiDirectBroadcastReceiver;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.DeviceListViewMvc;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.DeviceListViewMvcImp;
@@ -39,11 +43,29 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
         super.onResume();
         registerReceiver(receiver, filter);
     }
-    
+
     @Override
     protected void onPause() {
         super.onPause();
         unregisterReceiver(receiver);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.device_list_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.discover_peers:
+                Toast.makeText(this, "Menu item clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
