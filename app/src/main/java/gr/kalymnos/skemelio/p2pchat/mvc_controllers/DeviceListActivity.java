@@ -121,6 +121,19 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
             WifiP2pConfig config = new WifiP2pConfig();
             config.deviceAddress = device.deviceAddress;
             config.wps.setup = WpsInfo.PBC;
+            /**
+             * From the docs:
+             *
+             * If all the devices in a network support Wi-Fi Direct,
+             * you can use the connect() method on each device
+             * because the method then creates the group and selects a group owner automatically.
+             *
+             * If you want the device running your app to serve as the group owner for a network
+             * that includes legacy devices—that is, devices that don't support Wi-Fi Direct
+             * —you follow the same sequence of steps as in the Connect to a Peer section,
+             * except you create a new WifiP2pManager.ActionListener using createGroup()
+             * instead of connect().
+             * */
             manager.connect(channel, config, connectionInitiationListener);
         }
     }
