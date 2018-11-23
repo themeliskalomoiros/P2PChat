@@ -39,14 +39,6 @@ public class MessageWriter extends Thread {
             Log.e(TAG, "Some object to be serialized does not implement the java.io.Serializable interface.", e);
         } catch (IOException e) {
             Log.e(TAG, "Something went wrong with the OutputStream.", e);
-        } finally {
-            if (objectOut != null) {
-                try {
-                    objectOut.close();
-                } catch (IOException e) {
-                    Log.e(TAG, "Error closing the stream.", e);
-                }
-            }
         }
     }
 }
