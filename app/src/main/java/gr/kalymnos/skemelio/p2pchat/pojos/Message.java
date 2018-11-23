@@ -1,6 +1,9 @@
 package gr.kalymnos.skemelio.p2pchat.pojos;
 
-public class Message {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Message implements Parcelable {
 
     private String message, sender;
 
@@ -9,11 +12,39 @@ public class Message {
         this.sender = sender;
     }
 
+    protected Message(Parcel in) {
+        message = in.readString();
+        sender = in.readString();
+    }
+
+    public static final Creator<Message> CREATOR = new Creator<Message>() {
+        @Override
+        public Message createFromParcel(Parcel in) {
+            return new Message(in);
+        }
+
+        @Override
+        public Message[] newArray(int size) {
+            return new Message[size];
+        }
+    };
+
     public String getMessage() {
         return message;
     }
 
     public String getSender() {
         return sender;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(message);
+        parcel.writeString(sender);
     }
 }
