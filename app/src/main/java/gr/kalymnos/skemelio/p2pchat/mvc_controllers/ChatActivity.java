@@ -9,7 +9,9 @@ import gr.kalymnos.skemelio.p2pchat.mvc_views.chat.ChatViewMvcImp;
 
 public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSendClickListener {
 
-    public static final String EXTRA_DEVICE = "extra wifi p2p device";
+    public static final String EXTRA_DEVICE_NAME = "extra wifi p2p device name";
+    public static final String EXTRA_IS_GROUP_OWNER = "extra wifi p2p is group owner";
+
     private ChatViewMvc viewMvc;
 
     @Override
@@ -32,5 +34,12 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
     private void initializeViewMvc() {
         viewMvc = new ChatViewMvcImp(LayoutInflater.from(this), null);
         viewMvc.setOnSendClickListener(this);
+    }
+
+    public static Bundle createBundle(String device, boolean isGroupOwner){
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_DEVICE_NAME,device);
+        bundle.putBoolean(EXTRA_IS_GROUP_OWNER,isGroupOwner);
+        return bundle;
     }
 }
