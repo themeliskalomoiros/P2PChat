@@ -1,13 +1,22 @@
 package gr.kalymnos.skemelio.p2pchat.mvc_model.chat;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+
+import gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct.WifiP2pUtils;
+import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
 public abstract class ChatService {
     private static final String TAG = "ChatService";
@@ -15,9 +24,9 @@ public abstract class ChatService {
     protected Context context;
     private Server server = null;
     private Client client = null;
-    private ChatManager chatManager = null;
+    private ChatMessageReader chatMessageReader = null;
 
-    protected ChatService(Context context) {
+    protected ChatService(@NonNull Context context) {
         this.context = context;
     }
 
@@ -54,13 +63,13 @@ public abstract class ChatService {
     public abstract void manageServerConnectedSocket(Socket socket);
 
     private class Client extends Thread {
-        private static final String TAG = "Client";
-        private static final int TIMEOUT_MILLI = 500;
+        static final String TAG = "Client";
+        static final int TIMEOUT_MILLI = 500;
 
-        private Socket socket = new Socket();
-        private InetAddress serverAddress; // The group owners address, he is the server.
+        Socket socket = new Socket();
+        InetAddress serverAddress; // The group owners address, he is the server.
 
-        public Client(InetAddress serverAddress) {
+        Client(InetAddress serverAddress) {
             this.serverAddress = serverAddress;
         }
 
@@ -79,10 +88,55 @@ public abstract class ChatService {
 
     protected abstract void manageClientConnectedSocket(Socket socket);
 
-    private class ChatManager extends Thread {
+    private class ChatMessageReader extends Thread {
+        static final String TAG = "ChatMessageReader";
+
+        InputStream in;
+        byte[] buffer = new byte[1024];
+
+        ChatMessageReader(Socket socket) {
+            try {
+                in = socket.getInputStream();
+            } catch (IOException e) {
+                Log.e(TAG, "Error occured when creating the input stream, " +
+                        "the socket is closed, " +
+                        "the socket is not connected, " +
+                        "or the socket input has been shutdown using shutdownInput()", e);
+            }
+        }
+
         @Override
         public void run() {
-            // TODO: must implement
+            // Keep listening to the inputStream until an exception occurs.
+            while (true) {
+                try {
+                    in.read(buffer);
+                    // Broadcast the message locally, so stakeholders should be informed.
+                    broadcastMessage(createMessage());
+                } catch (IOException e) {
+                    Log.d(TAG, "Input stream was disconnected", e);
+                    break;
+                }
+            }
+        }
+
+        private void broadcastMessage(Message message) {
+            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
+            manager.sendBroadcast(createSendMessageIntent(message));
+        }
+
+        private Intent createSendMessageIntent(Message message) {
+            Bundle extras = new Bundle();
+            extras.putParcelable(ChatConstants.Extras.EXTRA_MESSAGE, message);
+            Intent intent = new Intent(ChatConstants.Actions.ACTION_SEND_MESSAGE);
+            intent.putExtras(extras);
+            return intent;
+        }
+
+        private Message createMessage() {
+            String messageText = new String(buffer);
+            String sender = WifiP2pUtils.getDeviceBluetoothName(context.getContentResolver());
+            return new Message(messageText, sender);
         }
     }
 
