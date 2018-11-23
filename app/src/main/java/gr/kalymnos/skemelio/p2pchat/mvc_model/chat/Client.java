@@ -10,7 +10,7 @@ import java.net.Socket;
 
 class Client extends Thread {
     private static final String TAG = "Skemelio Client";
-    private static final int TIMEOUT_MILLI = 500;
+    private static final int TIMEOUT_MILLI = 1000;
 
     interface OnClientConnectionListener {
         void onClientConnected(Socket socket);
