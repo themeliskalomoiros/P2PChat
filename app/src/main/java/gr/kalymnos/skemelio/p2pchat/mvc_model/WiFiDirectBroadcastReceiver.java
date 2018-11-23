@@ -39,7 +39,6 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             // you'll want to create a peer thread that connects
             // to the group owner.
         }
-
     };
 
 

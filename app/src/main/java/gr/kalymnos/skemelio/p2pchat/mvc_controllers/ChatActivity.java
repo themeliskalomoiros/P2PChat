@@ -9,6 +9,7 @@ import gr.kalymnos.skemelio.p2pchat.mvc_views.chat.ChatViewMvcImp;
 
 public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSendClickListener {
 
+    public static final String EXTRA_DEVICE = "extra wifi p2p device";
     private ChatViewMvc viewMvc;
 
     @Override
