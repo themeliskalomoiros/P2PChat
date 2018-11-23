@@ -36,30 +36,6 @@ public abstract class ChatService {
         this.context = context;
     }
 
-    private class Client extends Thread {
-        static final String TAG = "Client";
-        static final int TIMEOUT_MILLI = 500;
-
-        Socket socket = new Socket();
-        InetAddress serverAddress; // The group owners address, he is the server.
-
-        Client(InetAddress serverAddress) {
-            this.serverAddress = serverAddress;
-        }
-
-        @Override
-        public void run() {
-            // TODO: must implement
-            try {
-                socket.bind(null);
-                socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
-                manageClientConnectedSocket(socket);
-            } catch (IOException e) {
-                Log.e(TAG, "Something went wrong with the socket", e);
-            }
-        }
-    }
-
     protected abstract void manageClientConnectedSocket(Socket socket);
 
     private class ChatMessageReceiver extends Thread {
