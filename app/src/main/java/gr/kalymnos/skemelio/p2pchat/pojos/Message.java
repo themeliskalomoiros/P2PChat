@@ -3,7 +3,9 @@ package gr.kalymnos.skemelio.p2pchat.pojos;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Message implements Parcelable {
+import java.io.Serializable;
+
+public class Message implements Parcelable, Serializable {
 
     private String message, sender;
 
