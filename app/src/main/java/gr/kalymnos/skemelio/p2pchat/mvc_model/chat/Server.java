@@ -22,14 +22,19 @@ class Server extends Thread {
     @Override
     public void run() {
         /** Keep listening until exception occurs or a socket is returned.*/
+        try {
+            serverSocket = new ServerSocket(PORT);
+        } catch (IOException e) {
+            Log.e(TAG, "Error creating server socket or accepting a client", e);
+        }
+
         while (true) {
             try {
-                serverSocket = new ServerSocket(PORT);
-                Log.d(TAG,"Created server socket");
+                Log.d(TAG, "Created server socket");
                 socket = serverSocket.accept();
-                Log.d(TAG,"accepted connection");
+                Log.d(TAG, "accepted connection");
             } catch (IOException e) {
-                Log.e(TAG, "Error creating server socket or accepting a client", e);
+                Log.e(TAG, "Error accepting a client", e);
             }
 
             if (socket != null) {
