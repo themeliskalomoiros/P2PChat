@@ -5,10 +5,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+
+import java.io.IOException;
+import java.net.Socket;
 
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
-public class ChatService {
+public class ChatService implements Server.OnServerAcceptConnectionListener,
+        Client.OnClientConnectionListener, MessageReader.OnMessageReceivedListener {
     private static final String TAG = "ChatService";
 
     protected Context context;
@@ -33,4 +38,30 @@ public class ChatService {
         return intent;
     }
 
+    @Override
+    public void onClientConnected(Socket socket) {
+        initializeMessageReader(socket);
+        messageReader.start();
+    }
+
+    @Override
+    public void onMessageReceived(Message message) {
+        broadcastMessage(message);
+    }
+
+    @Override
+    public void onServerAcceptConnection(Socket socket) {
+        initializeMessageReader(socket);
+        messageReader.start();
+    }
+
+    private void initializeMessageReader(Socket socket) {
+        if (messageReader == null) {
+            try {
+                messageReader = new MessageReader(socket.getInputStream());
+            } catch (IOException e) {
+                Log.e(TAG, "Error creating MessageReager", e);
+            }
+        }
+    }
 }
