@@ -8,7 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 class Server extends Thread {
-    private static final String TAG = "Server";
+    private static final String TAG = "Skemelio Server";
     static final int PORT = 8888;
 
     interface OnServerAcceptConnectionListener {

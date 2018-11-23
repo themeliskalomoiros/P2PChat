@@ -9,7 +9,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 class Client extends Thread {
-    private static final String TAG = "Client";
+    private static final String TAG = "Skemelio Client";
     private static final int TIMEOUT_MILLI = 500;
 
     interface OnClientConnectionListener {
