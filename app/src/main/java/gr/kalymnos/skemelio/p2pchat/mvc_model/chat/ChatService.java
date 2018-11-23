@@ -8,7 +8,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
-public abstract class ChatService {
+public class ChatService {
     private static final String TAG = "ChatService";
 
     protected Context context;
