@@ -8,9 +8,11 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct.WifiP2pUtils;
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
 // TODO: Must implement stopServer and stopClient some time.
@@ -54,6 +56,26 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
     public void onClientConnected(Socket socket) {
         initializeMessageReader(socket);
         messageReader.start();
+    }
+
+    public void write(String msg) {
+        Message message = new Message(msg, WifiP2pUtils.getDeviceBluetoothName(context.getContentResolver()));
+        new MessageWriter(getCurrentOutputStream(), message).start();
+    }
+
+    /**
+     * The device can be a server or a client, not both.
+     */
+    private OutputStream getCurrentOutputStream() {
+        OutputStream out = null;
+        if (server != null && client == null) {
+            out = server.getOutputStream();
+        } else if (server == null && client != null) {
+            out = client.getOutputStream();
+        } else {
+            throw new UnsupportedOperationException(TAG + ": Don't know if this device is a server, a client, both or none.");
+        }
+        return out;
     }
 
     @Override
