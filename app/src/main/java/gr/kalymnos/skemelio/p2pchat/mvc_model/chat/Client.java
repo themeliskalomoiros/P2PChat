@@ -26,23 +26,23 @@ class Client extends Thread {
 
     @Override
     public void run() {
+        bindSocket();
+        try {
+            socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
+            Log.d(TAG, "Connected to socket");
+            if (callback != null) {
+                callback.onClientConnected(socket);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Error while socket was trying to connect.", e);
+        }
+    }
+
+    private void bindSocket() {
         try {
             socket.bind(null);
         } catch (IOException e) {
             Log.e(TAG, "Error at socket binding.", e);
-        }
-
-        while (true) {   // Try to connect all the time, until its done!
-            try {
-                socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
-                Log.d(TAG, "Connected to socket");
-                if (callback != null) {
-                    callback.onClientConnected(socket);
-                    break;
-                }
-            } catch (IOException e) {
-                Log.e(TAG, "Error while socket was trying to connect.", e);
-            }
         }
     }
 
