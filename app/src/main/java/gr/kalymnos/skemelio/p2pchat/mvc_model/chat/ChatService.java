@@ -58,7 +58,7 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
         messageReader.start();
     }
 
-    public void write(String msg) {
+    public void send(String msg) {
         Message message = new Message(msg, WifiP2pUtils.getDeviceBluetoothName(context.getContentResolver()));
         new MessageWriter(getCurrentOutputStream(), message).start();
     }

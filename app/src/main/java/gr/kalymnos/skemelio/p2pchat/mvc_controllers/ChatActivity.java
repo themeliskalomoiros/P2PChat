@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import java.util.ArrayList;
 import java.util.List;
 
-import gr.kalymnos.skemelio.p2pchat.mvc_model.chat.ChatConstants;
+import gr.kalymnos.skemelio.p2pchat.mvc_model.chat.ChatService;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.chat.ChatViewMvc;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.chat.ChatViewMvcImp;
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
@@ -64,7 +64,7 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
 
     @Override
     public void onSendClicked(String msg) {
-        
+        ChatService.getInstance(this).send(msg);
     }
 
     private void setupUi() {
