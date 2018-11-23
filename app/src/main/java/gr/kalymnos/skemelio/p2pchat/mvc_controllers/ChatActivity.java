@@ -13,10 +13,12 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
     public static final String EXTRA_IS_GROUP_OWNER = "extra wifi p2p is group owner";
 
     private ChatViewMvc viewMvc;
+    private String username; // Or device name
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        username = getIntent().getStringExtra(EXTRA_DEVICE_NAME);
         setupUi();
     }
 
@@ -27,6 +29,11 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
 
     private void setupUi() {
         initializeViewMvc();
+        if (getIntent().getBooleanExtra(EXTRA_IS_GROUP_OWNER, false)) {
+            viewMvc.indicateDeviceIsGroupOwner();
+        } else {
+            viewMvc.indicateDeviceIsNotGroupOwner();
+        }
         setSupportActionBar(viewMvc.getToolbar());
         setContentView(viewMvc.getRootView());
     }
@@ -36,10 +43,10 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
         viewMvc.setOnSendClickListener(this);
     }
 
-    public static Bundle createBundle(String device, boolean isGroupOwner){
+    public static Bundle createBundle(String device, boolean isGroupOwner) {
         Bundle bundle = new Bundle();
-        bundle.putString(EXTRA_DEVICE_NAME,device);
-        bundle.putBoolean(EXTRA_IS_GROUP_OWNER,isGroupOwner);
+        bundle.putString(EXTRA_DEVICE_NAME, device);
+        bundle.putBoolean(EXTRA_IS_GROUP_OWNER, isGroupOwner);
         return bundle;
     }
 }
