@@ -30,6 +30,7 @@ class Client extends Thread {
         try {
             socket.bind(null);
             socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
+            Log.d(TAG,"Connected to socket");
             if (callback != null) {
                 callback.onClientConnected(socket);
             }

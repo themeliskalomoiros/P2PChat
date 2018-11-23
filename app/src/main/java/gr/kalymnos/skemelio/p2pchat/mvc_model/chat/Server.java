@@ -25,7 +25,9 @@ class Server extends Thread {
         while (true) {
             try {
                 serverSocket = new ServerSocket(PORT);
+                Log.d(TAG,"Created server socket");
                 socket = serverSocket.accept();
+                Log.d(TAG,"accepted connection");
             } catch (IOException e) {
                 Log.e(TAG, "Error creating server socket or accepting a client", e);
             }
