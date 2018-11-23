@@ -35,12 +35,14 @@ class Server extends Thread {
             if (socket != null) {
                 // A connection was accepted. Perform work associated with the connection
                 // in a seperate thread.
-                callback.onServerAcceptConnection(socket);
+                if (callback != null) {
+                    callback.onServerAcceptConnection(socket);
+                }
 
                 try {
                     serverSocket.close();
                 } catch (IOException e) {
-                    Log.d(TAG,"Could not close() the server socket");
+                    Log.d(TAG, "Could not close() the server socket");
                 }
             }
         }

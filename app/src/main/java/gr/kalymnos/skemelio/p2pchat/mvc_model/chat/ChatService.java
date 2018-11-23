@@ -13,6 +13,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
 
+import gr.kalymnos.skemelio.p2pchat.mvc_controllers.ChatActivity;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct.WifiP2pUtils;
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
@@ -118,5 +119,13 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
                 Log.e(TAG, "Error creating MessageReager", e);
             }
         }
+    }
+
+    private void startChatActivity() {
+        String deviceName = WifiP2pUtils.getDeviceBluetoothName(context.getContentResolver());
+        Bundle extras = ChatActivity.createBundle(deviceName, info);
+        Intent intent = new Intent(context, ChatActivity.class);
+        intent.putExtras(extras);
+        context.startActivity(intent);
     }
 }
