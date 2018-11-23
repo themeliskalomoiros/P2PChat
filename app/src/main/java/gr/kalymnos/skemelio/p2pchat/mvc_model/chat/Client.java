@@ -40,8 +40,4 @@ class Client extends Thread {
     void setOnClientConnectionListener(OnClientConnectionListener listener) {
         callback = listener;
     }
-
-    void cancel() {
-
-    }
 }

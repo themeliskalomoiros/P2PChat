@@ -28,58 +28,12 @@ public abstract class ChatService {
     private static final String TAG = "ChatService";
 
     protected Context context;
-    private Server server = null;
-    private Client client = null;
-    private ChatMessageReceiver chatMessageReceiver = null;
+    private Server server;
+    private Client client;
+    private MessageReceiver messageReceiver;
 
     protected ChatService(@NonNull Context context) {
         this.context = context;
-    }
-
-    protected abstract void manageClientConnectedSocket(Socket socket);
-
-    private class ChatMessageReceiver extends Thread {
-        static final String TAG = "ChatMessageReceiver";
-
-        ObjectInputStream objectIn;
-
-        ChatMessageReceiver(@NonNull InputStream in) {
-            try {
-                objectIn = new ObjectInputStream(in);
-            } catch (IOException e) {
-                Log.e(TAG, "Error creating ObjectInputStream", e);
-            }
-        }
-
-        @Override
-        public void run() {
-            // Keep listening to the stream until an exception occurs.
-            while (true) {
-                try {
-                    Message message = (Message) objectIn.readObject();
-                    if (message != null)
-                        broadcastMessage(message);
-                } catch (IOException e) {
-                    Log.d(TAG, "Something went wrong with the stream.", e);
-                    break;
-                } catch (ClassNotFoundException e) {
-                    Log.d(TAG, "Class of a serialized object cannot be found.", e);
-                }
-            }
-        }
-
-        private void broadcastMessage(Message message) {
-            LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-            manager.sendBroadcast(createMessageReceivedIntent(message));
-        }
-
-        private Intent createMessageReceivedIntent(Message message) {
-            Bundle extras = new Bundle();
-            extras.putParcelable(ChatConstants.Extras.EXTRA_MESSAGE, message);
-            Intent intent = new Intent(ChatConstants.Actions.ACTION_MESSAGE_RECEIVED);
-            intent.putExtras(extras);
-            return intent;
-        }
     }
 
     private class ChatMessageSender extends Thread {
@@ -120,6 +74,19 @@ public abstract class ChatService {
                 }
             }
         }
+    }
+
+    private void broadcastMessage(Message message) {
+        LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
+        manager.sendBroadcast(createMessageReceivedIntent(message));
+    }
+
+    private Intent createMessageReceivedIntent(Message message) {
+        Bundle extras = new Bundle();
+        extras.putParcelable(ChatConstants.Extras.EXTRA_MESSAGE, message);
+        Intent intent = new Intent(ChatConstants.Actions.ACTION_MESSAGE_RECEIVED);
+        intent.putExtras(extras);
+        return intent;
     }
 
 }

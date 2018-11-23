@@ -44,8 +44,4 @@ class Server extends Thread {
     void setOnServerAcceptConnectionListener(OnServerAcceptConnectionListener listener) {
         callback = listener;
     }
-
-    void cancel() {
-
-    }
 }
