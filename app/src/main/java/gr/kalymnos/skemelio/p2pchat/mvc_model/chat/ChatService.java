@@ -9,6 +9,9 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InvalidClassException;
+import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -24,7 +27,7 @@ public abstract class ChatService {
     protected Context context;
     private Server server = null;
     private Client client = null;
-    private ChatMessageReader chatMessageReader = null;
+    private ChatMessageReceiver chatMessageReceiver = null;
 
     protected ChatService(@NonNull Context context) {
         this.context = context;
@@ -88,13 +91,13 @@ public abstract class ChatService {
 
     protected abstract void manageClientConnectedSocket(Socket socket);
 
-    private class ChatMessageReader extends Thread {
-        static final String TAG = "ChatMessageReader";
+    private class ChatMessageReceiver extends Thread {
+        static final String TAG = "ChatMessageReceiver";
 
         InputStream in;
         byte[] buffer = new byte[1024];
 
-        ChatMessageReader(Socket socket) {
+        ChatMessageReceiver(@NonNull Socket socket) {
             try {
                 in = socket.getInputStream();
             } catch (IOException e) {
@@ -112,7 +115,7 @@ public abstract class ChatService {
                 try {
                     in.read(buffer);
                     // Broadcast the message locally, so stakeholders should be informed.
-                    broadcastMessage(createMessage());
+                    broadcastMessage(createMessageFrom(buffer));
                 } catch (IOException e) {
                     Log.d(TAG, "Input stream was disconnected", e);
                     break;
@@ -122,21 +125,63 @@ public abstract class ChatService {
 
         private void broadcastMessage(Message message) {
             LocalBroadcastManager manager = LocalBroadcastManager.getInstance(context);
-            manager.sendBroadcast(createSendMessageIntent(message));
+            manager.sendBroadcast(createMessageReceivedIntent(message));
         }
 
-        private Intent createSendMessageIntent(Message message) {
+        private Intent createMessageReceivedIntent(Message message) {
             Bundle extras = new Bundle();
             extras.putParcelable(ChatConstants.Extras.EXTRA_MESSAGE, message);
-            Intent intent = new Intent(ChatConstants.Actions.ACTION_SEND_MESSAGE);
+            Intent intent = new Intent(ChatConstants.Actions.ACTION_MESSAGE_RECEIVED);
             intent.putExtras(extras);
             return intent;
         }
 
-        private Message createMessage() {
+        private Message createMessageFrom(byte[] buffer) {
             String messageText = new String(buffer);
             String sender = WifiP2pUtils.getDeviceBluetoothName(context.getContentResolver());
             return new Message(messageText, sender);
+        }
+    }
+
+    private class ChatMessageSender extends Thread {
+        private static final String TAG = "ChatMessageSender";
+        OutputStream out;
+        Message message;
+
+        ChatMessageSender(@NonNull Socket socket, Message message) {
+            try {
+                out = socket.getOutputStream();
+                this.message = message;
+            } catch (IOException e) {
+                Log.e(TAG, "An error occured when creating the output stream " +
+                        "or if the socket is not connected", e);
+            }
+        }
+
+        @Override
+        public void run() {
+            writeMessage();
+        }
+
+        private void writeMessage() {
+            try {
+                ObjectOutputStream objectOut = new ObjectOutputStream(out);
+                objectOut.writeObject(message);
+            } catch (InvalidClassException e) {
+                Log.e(TAG, "Something is wrong with a class used by serialization.", e);
+            } catch (NotSerializableException e) {
+                Log.e(TAG, "Some object to be serialized does not implement the java.io.Serializable interface.", e);
+            } catch (IOException e) {
+                Log.e(TAG, "Something went wrong with the OutputStream.", e);
+            } finally {
+                if (out != null) {
+                    try {
+                        out.close();
+                    } catch (IOException e) {
+                        Log.e(TAG, "Could not close output stream.", e);
+                    }
+                }
+            }
         }
     }
 

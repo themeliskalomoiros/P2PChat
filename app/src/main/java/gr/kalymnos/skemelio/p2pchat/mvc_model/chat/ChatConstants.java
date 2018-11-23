@@ -4,7 +4,7 @@ public interface ChatConstants {
 
     interface Actions {
         String TAG = "Actions";
-        String ACTION_SEND_MESSAGE = TAG + " send message";
+        String ACTION_MESSAGE_RECEIVED = TAG + " receive message";
     }
 
     interface Extras {
