@@ -79,6 +79,8 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
                 // We are connected with the other device, request connection
                 // info to find group owner IP
                 manager.requestConnectionInfo(channel, connectionListener);
+            } else {
+                manager.discoverPeers(channel, null);
             }
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // Respond to this device's wifi state changing
