@@ -35,6 +35,7 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
     public static synchronized ChatService getInstance(@NonNull Context context) {
         if (instance == null) {
             instance = new ChatService(context);
+            Log.d(TAG, "Created ChatService instance");
         }
         return instance;
     }
