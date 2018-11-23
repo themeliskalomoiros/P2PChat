@@ -22,12 +22,7 @@ class Server extends Thread {
     @Override
     public void run() {
         /** Keep listening until exception occurs or a socket is returned.*/
-        try {
-            serverSocket = new ServerSocket(PORT);
-            Log.d(TAG, "Created server socket");
-        } catch (IOException e) {
-            Log.e(TAG, "Error creating server socket or accepting a client", e);
-        }
+        initializeServerSocket();
 
         while (true) {
             try {
@@ -41,11 +36,22 @@ class Server extends Thread {
                 // A connection was accepted. Perform work associated with the connection
                 // in a seperate thread.
                 callback.onServerAcceptConnection(socket);
+
+                try {
+                    serverSocket.close();
+                } catch (IOException e) {
+                    Log.d(TAG,"Could not close() the server socket");
+                }
             }
-            /** We could close the server socket here if we wanted to establish a connection with
-             only one client and just keep the socket open. In this case our server is
-             waiting for other connections as well.
-             */
+        }
+    }
+
+    private void initializeServerSocket() {
+        try {
+            serverSocket = new ServerSocket(PORT);
+            Log.d(TAG, "Created server socket");
+        } catch (IOException e) {
+            Log.e(TAG, "Error creating server socket or accepting a client", e);
         }
     }
 
