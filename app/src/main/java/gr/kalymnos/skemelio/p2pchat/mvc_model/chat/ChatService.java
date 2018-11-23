@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -21,6 +22,8 @@ public abstract class ChatService {
     }
 
     private class Server extends Thread {
+        static final int PORT = 8888;
+
         private ServerSocket serverSocket = null;
         private Socket socket = null;
 
@@ -29,7 +32,7 @@ public abstract class ChatService {
             /** Keep listening until exception occurs or a socket is returned.*/
             while (true) {
                 try {
-                    serverSocket = new ServerSocket(8888);
+                    serverSocket = new ServerSocket(PORT);
                     socket = serverSocket.accept();
                 } catch (IOException e) {
                     Log.e(TAG, "Error creating server socket or accepting a client", e);
@@ -38,7 +41,7 @@ public abstract class ChatService {
                 if (socket != null) {
                     // A connection was accepted. Perform work associated with the connection
                     // in a seperate thread.
-                    manageServersConnectedSocket(socket);
+                    manageServerConnectedSocket(socket);
                 }
                 /** We could close the server socket here if we wanted to establish a connection with
                  only one client and just keep the socket open. In this case our server is
@@ -48,18 +51,33 @@ public abstract class ChatService {
         }
     }
 
-    public abstract void manageServersConnectedSocket(Socket socket);
+    public abstract void manageServerConnectedSocket(Socket socket);
 
     private class Client extends Thread {
+        private static final String TAG = "Client";
+        private static final int TIMEOUT_MILLI = 500;
 
-        private Socket socket = null;
-        private InetSocketAddress endPoint;
+        private Socket socket = new Socket();
+        private InetAddress serverAddress; // The group owners address, he is the server.
+
+        public Client(InetAddress serverAddress) {
+            this.serverAddress = serverAddress;
+        }
 
         @Override
         public void run() {
             // TODO: must implement
+            try {
+                socket.bind(null);
+                socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
+                manageClientConnectedSocket(socket);
+            } catch (IOException e) {
+                Log.e(TAG, "Something went wrong with the socket", e);
+            }
         }
     }
+
+    protected abstract void manageClientConnectedSocket(Socket socket);
 
     private class ChatManager extends Thread {
         @Override
