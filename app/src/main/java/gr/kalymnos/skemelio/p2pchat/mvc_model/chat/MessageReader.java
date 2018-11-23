@@ -22,9 +22,11 @@ public class MessageReader extends Thread {
     private ObjectInputStream objectIn;
     private OnMessageReceivedListener callback;
 
-    MessageReader(@NonNull InputStream in) {
+    public MessageReader(@NonNull InputStream in) {
         try {
+            Log.d(TAG,"Attempt to create objectIn");
             objectIn = new ObjectInputStream(in);
+            Log.d(TAG,"objectIn created");
         } catch (IOException e) {
             Log.e(TAG, "Error creating ObjectInputStream", e);
         }
