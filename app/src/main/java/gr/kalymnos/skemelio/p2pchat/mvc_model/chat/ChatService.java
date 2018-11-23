@@ -127,6 +127,7 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
         String deviceName = WifiP2pUtils.getDeviceBluetoothName(context.getContentResolver());
         Bundle extras = ChatActivity.createBundle(deviceName, info);
         Intent intent = new Intent(context, ChatActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtras(extras);
         context.startActivity(intent);
     }

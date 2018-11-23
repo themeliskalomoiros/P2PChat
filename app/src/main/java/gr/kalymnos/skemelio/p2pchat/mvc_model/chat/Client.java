@@ -28,7 +28,10 @@ class Client extends Thread {
     public void run() {
         bindSocket();
         try {
-            socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
+            while (true){
+                socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
+                break;
+            }
             Log.d(TAG, "Connected to socket");
             if (callback != null) {
                 callback.onClientConnected(socket);
