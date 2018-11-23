@@ -13,5 +13,9 @@ public interface ChatViewMvc extends ViewMvcWithToolbar {
 
     void bindMessages(List<Message> messages);
 
+    void indicateDeviceIsGroupOwner();
+
+    void indicateDeviceIsNotGroupOwner();
+
     void setOnSendClickListener(OnSendClickListener listener);
 }

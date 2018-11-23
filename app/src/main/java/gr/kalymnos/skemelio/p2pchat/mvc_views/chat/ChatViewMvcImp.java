@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class ChatViewMvcImp implements ChatViewMvc {
     private View root;
     private FloatingActionButton sendButton;
     private EditText input;
+    private TextView groupOwner;
     private ImageView smilley;
     private RecyclerView recyclerView;
     private MessageAdapter adapter;
@@ -36,6 +38,17 @@ public class ChatViewMvcImp implements ChatViewMvc {
     public void bindMessages(List<Message> messages) {
         adapter.addMessages(messages);
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void indicateDeviceIsGroupOwner() {
+        groupOwner.setText("Yes");
+        smilley.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void indicateDeviceIsNotGroupOwner() {
+        groupOwner.setText("No");
     }
 
     @Override
@@ -65,6 +78,7 @@ public class ChatViewMvcImp implements ChatViewMvc {
         sendButton = root.findViewById(R.id.send_fab);
         input = root.findViewById(R.id.textInput);
         smilley = root.findViewById(R.id.smilley);
+        groupOwner = root.findViewById(R.id.group_owner_indicator);
         toolbar = root.findViewById(R.id.toolbar);
         initializeRecyclerView();
     }
