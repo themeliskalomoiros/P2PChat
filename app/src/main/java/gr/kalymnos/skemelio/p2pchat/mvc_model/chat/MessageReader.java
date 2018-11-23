@@ -47,7 +47,11 @@ public class MessageReader extends Thread {
         }
     }
 
-    void setOnMessageReceivedListener(OnMessageReceivedListener listener) {
+    void addOnMessageReceivedListener(OnMessageReceivedListener listener) {
         callback = listener;
+    }
+
+    void removeOnMessageReceivedListener() {
+        callback = null;
     }
 }

@@ -37,7 +37,11 @@ class Client extends Thread {
         }
     }
 
-    void setOnClientConnectionListener(OnClientConnectionListener listener) {
+    void addOnClientConnectionListener(OnClientConnectionListener listener) {
         callback = listener;
+    }
+
+    void removeOnClientConnectionListener() {
+        callback = null;
     }
 }

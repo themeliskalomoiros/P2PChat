@@ -41,7 +41,11 @@ class Server extends Thread {
         }
     }
 
-    void setOnServerAcceptConnectionListener(OnServerAcceptConnectionListener listener) {
+    void addOnServerAcceptConnectionListener(OnServerAcceptConnectionListener listener) {
         callback = listener;
+    }
+
+    void removeOnServerAcceptConnectionListener() {
+        callback = null;
     }
 }
