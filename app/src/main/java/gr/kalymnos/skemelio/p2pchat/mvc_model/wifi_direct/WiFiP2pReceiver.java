@@ -32,7 +32,7 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
     private WifiP2pManager.ConnectionInfoListener connectionListener = (info) -> {
         // InetAddress from WifiP2pInfo struct.
         InetAddress groupOwnerAddress = info.groupOwnerAddress;
-        ChatService service = ChatService.getInstance(activity.getApplicationContext());
+        ChatService service = ChatService.getInstance(activity.getApplicationContext(),info);
 
         // After the group negotiation, we can determine the group owner
         // (server).

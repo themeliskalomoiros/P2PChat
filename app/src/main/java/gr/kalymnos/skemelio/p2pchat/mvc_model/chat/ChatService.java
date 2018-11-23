@@ -2,6 +2,7 @@ package gr.kalymnos.skemelio.p2pchat.mvc_model.chat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
@@ -23,18 +24,20 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
 
     private static ChatService instance = null;
 
-    protected Context context;
+    private final WifiP2pInfo info;
+    private Context context;
     private Server server;
     private Client client;
     private MessageReader messageReader;
 
-    private ChatService(Context context) {
+    private ChatService(Context context, WifiP2pInfo info) {
         this.context = context;
+        this.info = info;
     }
 
-    public static synchronized ChatService getInstance(@NonNull Context context) {
+    public static synchronized ChatService getInstance(@NonNull Context context, @NonNull WifiP2pInfo info) {
         if (instance == null) {
-            instance = new ChatService(context);
+            instance = new ChatService(context, info);
             Log.d(TAG, "Created ChatService instance");
         }
         return instance;
