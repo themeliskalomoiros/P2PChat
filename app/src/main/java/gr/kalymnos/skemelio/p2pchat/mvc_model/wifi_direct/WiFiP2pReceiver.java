@@ -7,6 +7,7 @@ import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import java.net.InetAddress;
 
@@ -18,6 +19,7 @@ import static android.net.wifi.p2p.WifiP2pManager.Channel;
 import static android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 
 public class WiFiP2pReceiver extends BroadcastReceiver {
+    private static final String TAG = "WiFiP2pReceiver";
 
     private WifiP2pManager manager;
     private Channel channel;
@@ -38,11 +40,13 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
             // Do whatever tasks are specific to the group owner.
             // One common case is creating a group owner thread and accepting
             // incoming connections.
+            Log.d(TAG,"Ready to start server...");
             service.startServer();
         } else if (info.groupFormed) {
             // The other device acts as the peer (client). In this case,
             // you'll want to create a peer thread that connects
             // to the group owner.
+            Log.d(TAG,"Ready to start client...");
             service.startClient(groupOwnerAddress);
         }
 
