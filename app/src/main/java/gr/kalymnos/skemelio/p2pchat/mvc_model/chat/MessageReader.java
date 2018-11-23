@@ -13,7 +13,7 @@ import java.io.ObjectInputStream;
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
 public class MessageReader extends Thread {
-    private static final String TAG = "MessageReader";
+    private static final String TAG = "Skemelio MessageReader";
 
     interface OnMessageReceivedListener {
         void onMessageReceived(Message message);
@@ -36,6 +36,7 @@ public class MessageReader extends Thread {
         while (true) {
             try {
                 Message message = (Message) objectIn.readObject();
+                Log.d(TAG,"Read message");
                 if (callback != null)
                     callback.onMessageReceived(message);
             } catch (IOException e) {
