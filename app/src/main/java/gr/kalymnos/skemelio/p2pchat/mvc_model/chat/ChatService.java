@@ -14,15 +14,25 @@ import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
 public class ChatService implements Server.OnServerAcceptConnectionListener,
         Client.OnClientConnectionListener, MessageReader.OnMessageReceivedListener {
+
     private static final String TAG = "ChatService";
+    private static ChatService instance = null;
+
 
     protected Context context;
     private Server server;
     private Client client;
     private MessageReader messageReader;
 
-    protected ChatService(@NonNull Context context) {
+    private ChatService(Context context) {
         this.context = context;
+    }
+
+    public synchronized ChatService getInstance(@NonNull Context context) {
+        if (instance == null) {
+            instance = new ChatService(context);
+        }
+        return instance;
     }
 
     private void broadcastMessage(Message message) {
