@@ -49,15 +49,7 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
             Log.d(TAG,"Ready to start client...");
             service.startClient(groupOwnerAddress);
         }
-
-        startChatActivity(info);
     };
-
-    private void startChatActivity(WifiP2pInfo info) {
-        String deviceName = WifiP2pUtils.getDeviceBluetoothName(activity.getContentResolver());
-        Bundle extras = ChatActivity.createBundle(deviceName, info.isGroupOwner);
-        activity.startChatActivity(extras);
-    }
 
     public WiFiP2pReceiver(WifiP2pManager manager, Channel channel,
                            DeviceListActivity activity) {
