@@ -215,14 +215,4 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     private void showLongToast(String text) {
         Toast.makeText(this, text, Toast.LENGTH_LONG).show();
     }
-
-    public void startChatActivity(Bundle bundle) {
-        startActivity(createChatActivityIntent(bundle));
-    }
-
-    private Intent createChatActivityIntent(Bundle bundle) {
-        Intent intent = new Intent(this, ChatActivity.class);
-        intent.putExtras(bundle);
-        return intent;
-    }
 }

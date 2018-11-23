@@ -61,6 +61,7 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
     public void onClientConnected(Socket socket) {
         initializeMessageReader(socket);
         messageReader.start();
+        startChatActivity();
     }
 
     public void send(String msg) {
@@ -92,6 +93,7 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
     public void onServerAcceptConnection(Socket socket) {
         initializeMessageReader(socket);
         messageReader.start();
+        startChatActivity();
     }
 
     public void startServer() {
