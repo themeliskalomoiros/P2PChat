@@ -4,12 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.os.Bundle;
 
 import java.net.InetAddress;
 
 import gr.kalymnos.skemelio.p2pchat.mvc_controllers.ChatActivity;
 import gr.kalymnos.skemelio.p2pchat.mvc_controllers.DeviceListActivity;
+import gr.kalymnos.skemelio.p2pchat.mvc_model.chat.ChatService;
 
 import static android.net.wifi.p2p.WifiP2pManager.Channel;
 import static android.net.wifi.p2p.WifiP2pManager.PeerListListener;
@@ -27,6 +30,7 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
     private WifiP2pManager.ConnectionInfoListener connectionListener = (info) -> {
         // InetAddress from WifiP2pInfo struct.
         InetAddress groupOwnerAddress = info.groupOwnerAddress;
+        ChatService service = ChatService.getInstance(activity.getApplicationContext());
 
         // After the group negotiation, we can determine the group owner
         // (server).
@@ -34,15 +38,22 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
             // Do whatever tasks are specific to the group owner.
             // One common case is creating a group owner thread and accepting
             // incoming connections.
+            service.startServer();
         } else if (info.groupFormed) {
             // The other device acts as the peer (client). In this case,
             // you'll want to create a peer thread that connects
             // to the group owner.
+            service.startClient(groupOwnerAddress);
         }
 
-        activity.startChatActivity(ChatActivity.createBundle(WifiP2pUtils.getDeviceBluetoothName(activity.getContentResolver()), info.isGroupOwner));
+        startChatActivity(info);
     };
 
+    private void startChatActivity(WifiP2pInfo info) {
+        String deviceName = WifiP2pUtils.getDeviceBluetoothName(activity.getContentResolver());
+        Bundle extras = ChatActivity.createBundle(deviceName, info.isGroupOwner);
+        activity.startChatActivity(extras);
+    }
 
     public WiFiP2pReceiver(WifiP2pManager manager, Channel channel,
                            DeviceListActivity activity) {
