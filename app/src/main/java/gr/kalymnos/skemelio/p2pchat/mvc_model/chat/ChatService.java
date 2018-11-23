@@ -36,38 +36,6 @@ public abstract class ChatService {
         this.context = context;
     }
 
-    private class Server extends Thread {
-        static final int PORT = 8888;
-
-        private ServerSocket serverSocket = null;
-        private Socket socket = null;
-
-        @Override
-        public void run() {
-            /** Keep listening until exception occurs or a socket is returned.*/
-            while (true) {
-                try {
-                    serverSocket = new ServerSocket(PORT);
-                    socket = serverSocket.accept();
-                } catch (IOException e) {
-                    Log.e(TAG, "Error creating server socket or accepting a client", e);
-                }
-
-                if (socket != null) {
-                    // A connection was accepted. Perform work associated with the connection
-                    // in a seperate thread.
-                    manageServerConnectedSocket(socket);
-                }
-                /** We could close the server socket here if we wanted to establish a connection with
-                 only one client and just keep the socket open. In this case our server is
-                 waiting for other connections as well.
-                 */
-            }
-        }
-    }
-
-    public abstract void manageServerConnectedSocket(Socket socket);
-
     private class Client extends Thread {
         static final String TAG = "Client";
         static final int TIMEOUT_MILLI = 500;
