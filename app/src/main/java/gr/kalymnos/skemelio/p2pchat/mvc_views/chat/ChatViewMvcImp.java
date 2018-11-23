@@ -85,7 +85,7 @@ public class ChatViewMvcImp implements ChatViewMvc {
 
     private void initializeRecyclerView() {
         adapter = new MessageAdapter(root.getContext());
-        recyclerView.findViewById(R.id.recyclerview);
+        recyclerView = root.findViewById(R.id.recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(root.getContext());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
