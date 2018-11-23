@@ -9,6 +9,7 @@ public interface ChatConstants {
 
     interface Extras {
         String TAG = "Extras";
-        String EXTRA_MESSAGE = " message";
+        String EXTRA_MESSAGE = TAG+" message";
+        String EXTRA_WIFI_P2P_INFO = TAG+" wifi p2p info";
     }
 }

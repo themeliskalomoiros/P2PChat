@@ -4,9 +4,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.p2p.WifiP2pInfo;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 
 import java.util.ArrayList;
@@ -19,14 +20,16 @@ import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
 import static gr.kalymnos.skemelio.p2pchat.mvc_model.chat.ChatConstants.Actions.ACTION_MESSAGE_RECEIVED;
 import static gr.kalymnos.skemelio.p2pchat.mvc_model.chat.ChatConstants.Extras.EXTRA_MESSAGE;
+import static gr.kalymnos.skemelio.p2pchat.mvc_model.chat.ChatConstants.Extras.EXTRA_WIFI_P2P_INFO;
 
 public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSendClickListener {
 
     public static final String EXTRA_DEVICE_NAME = "extra wifi p2p device name";
-    public static final String EXTRA_IS_GROUP_OWNER = "extra wifi p2p is group owner";
 
     private ChatViewMvc viewMvc;
     private String username;
+    private WifiP2pInfo info;
+
     private List<Message> messages = new ArrayList<>();
     private final IntentFilter messageIntentFilter = new IntentFilter();
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
@@ -46,6 +49,7 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         username = getIntent().getStringExtra(EXTRA_DEVICE_NAME);
+        info = getIntent().getParcelableExtra(EXTRA_WIFI_P2P_INFO);
         messageIntentFilter.addAction(ACTION_MESSAGE_RECEIVED);
         setupUi();
     }
@@ -64,12 +68,13 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
 
     @Override
     public void onSendClicked(String msg) {
-        ChatService.getInstance(this).send(msg);
+        ChatService.getInstance(this, getIntent().getParcelableExtra(EXTRA_WIFI_P2P_INFO))
+                .send(msg);
     }
 
     private void setupUi() {
         initializeViewMvc();
-        if (getIntent().getBooleanExtra(EXTRA_IS_GROUP_OWNER, false)) {
+        if (info.isGroupOwner) {
             viewMvc.indicateDeviceIsGroupOwner();
         } else {
             viewMvc.indicateDeviceIsNotGroupOwner();
@@ -83,10 +88,10 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
         viewMvc.setOnSendClickListener(this);
     }
 
-    public static Bundle createBundle(String device, boolean isGroupOwner) {
+    public static Bundle createBundle(String device, WifiP2pInfo info) {
         Bundle bundle = new Bundle();
         bundle.putString(EXTRA_DEVICE_NAME, device);
-        bundle.putBoolean(EXTRA_IS_GROUP_OWNER, isGroupOwner);
+        bundle.putParcelable(EXTRA_WIFI_P2P_INFO, info);
         return bundle;
     }
 }
