@@ -1,14 +1,10 @@
 package gr.kalymnos.skemelio.p2pchat.mvc_model.chat;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectInputStream;
 
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
@@ -19,17 +15,14 @@ public class MessageReader extends Thread {
         void onMessageReceived(Message message);
     }
 
-    private ObjectInputStream objectIn;
+    private InputStream in;
+    private int len;
+    private byte[] buffer = new byte[1024];
+
     private OnMessageReceivedListener callback;
 
     public MessageReader(@NonNull InputStream in) {
-        try {
-            Log.d(TAG,"Attempt to create objectIn");
-            objectIn = new ObjectInputStream(in);
-            Log.d(TAG,"objectIn created");
-        } catch (IOException e) {
-            Log.e(TAG, "Error creating ObjectInputStream", e);
-        }
+        this.in = in;
     }
 
     @Override
@@ -37,15 +30,19 @@ public class MessageReader extends Thread {
         // Keep listening to the stream until an exception occurs.
         while (true) {
             try {
-                Message message = (Message) objectIn.readObject();
-                Log.d(TAG,"Read message");
-                if (callback != null)
-                    callback.onMessageReceived(message);
+                in.read(buffer);
+                String text = new String(buffer);
+
+                in.read(buffer);
+                String sender = new String(buffer);
+
+                Log.d(TAG, "Read message");
+                if (callback != null) {
+                    callback.onMessageReceived(new Message(text,sender));
+                }
             } catch (IOException e) {
                 Log.d(TAG, "Something went wrong with the stream.", e);
                 break;
-            } catch (ClassNotFoundException e) {
-                Log.d(TAG, "Class of a serialized object cannot be found.", e);
             }
         }
     }
