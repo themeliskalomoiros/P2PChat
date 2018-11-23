@@ -4,9 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.provider.Settings;
 
 import java.net.InetAddress;
 
@@ -42,7 +40,7 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
             // to the group owner.
         }
 
-        activity.startChatActivity(ChatActivity.createBundle(getDeviceBluetoothName(), info.isGroupOwner));
+        activity.startChatActivity(ChatActivity.createBundle(WifiP2pUtils.getDeviceBluetoothName(activity.getContentResolver()), info.isGroupOwner));
     };
 
 
@@ -88,10 +86,5 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
         } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             // Respond to this device's wifi state changing
         }
-    }
-
-
-    private String getDeviceBluetoothName() {
-        return Settings.Secure.getString(activity.getContentResolver(), "bluetooth_name");
     }
 }

@@ -1,9 +1,11 @@
 package gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct;
 
+import android.content.ContentResolver;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pDevice;
+import android.provider.Settings;
 
-public interface WifiP2pUtilities {
+public interface WifiP2pUtils {
 
     static String getReasonText(int reason) {
         switch (reason) {
@@ -33,5 +35,9 @@ public interface WifiP2pUtilities {
             default:
                 return "Unknown";
         }
+    }
+
+    static String getDeviceBluetoothName(ContentResolver resolver){
+        return Settings.Secure.getString(resolver, "bluetooth_name");
     }
 }
