@@ -4,7 +4,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import gr.kalymnos.skemelio.p2pchat.R;
-import gr.kalymnos.skemelio.p2pchat.mvc_model.Message;
+import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
 public class ChatViewMvcImp implements ChatViewMvc {
 

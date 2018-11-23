@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.net.NetworkInfo;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.provider.Settings;
 
 import java.net.InetAddress;
 
+import gr.kalymnos.skemelio.p2pchat.mvc_controllers.ChatActivity;
 import gr.kalymnos.skemelio.p2pchat.mvc_controllers.DeviceListActivity;
 
 import static android.net.wifi.p2p.WifiP2pManager.Channel;
@@ -39,6 +41,8 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
             // you'll want to create a peer thread that connects
             // to the group owner.
         }
+
+        activity.startChatActivity(ChatActivity.createBundle(getDeviceBluetoothName(), info.isGroupOwner));
     };
 
 
@@ -87,4 +91,7 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     }
 
 
+    private String getDeviceBluetoothName() {
+        return Settings.Secure.getString(activity.getContentResolver(), "bluetooth_name");
+    }
 }

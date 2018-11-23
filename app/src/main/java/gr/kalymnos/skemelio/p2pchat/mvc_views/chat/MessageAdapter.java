@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import gr.kalymnos.skemelio.p2pchat.R;
-import gr.kalymnos.skemelio.p2pchat.mvc_model.Message;
+import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
 class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageHolder> {
 

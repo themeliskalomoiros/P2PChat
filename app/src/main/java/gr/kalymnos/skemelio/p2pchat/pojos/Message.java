@@ -1,4 +1,4 @@
-package gr.kalymnos.skemelio.p2pchat.mvc_model;
+package gr.kalymnos.skemelio.p2pchat.pojos;
 
 public class Message {
 
