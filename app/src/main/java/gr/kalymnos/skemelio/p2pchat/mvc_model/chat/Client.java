@@ -27,15 +27,18 @@ class Client extends Thread {
     @Override
     public void run() {
         // TODO: must implement
-        try {
-            socket.bind(null);
-            socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
-            Log.d(TAG,"Connected to socket");
-            if (callback != null) {
-                callback.onClientConnected(socket);
+        while (true){   // Try to connect all the time, until its done!
+            try {
+                socket.bind(null);
+                socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
+                Log.d(TAG,"Connected to socket");
+                if (callback != null) {
+                    callback.onClientConnected(socket);
+                    break;
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Something went wrong with the socket", e);
             }
-        } catch (IOException e) {
-            Log.e(TAG, "Something went wrong with the socket", e);
         }
     }
 
