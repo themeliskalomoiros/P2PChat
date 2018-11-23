@@ -1,4 +1,4 @@
-package gr.kalymnos.skemelio.p2pchat.mvc_model;
+package gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct;
 
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pDevice;

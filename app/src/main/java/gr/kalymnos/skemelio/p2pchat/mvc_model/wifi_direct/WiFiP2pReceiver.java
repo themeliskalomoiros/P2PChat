@@ -1,4 +1,4 @@
-package gr.kalymnos.skemelio.p2pchat.mvc_model;
+package gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -16,7 +16,7 @@ import gr.kalymnos.skemelio.p2pchat.mvc_controllers.DeviceListActivity;
 import static android.net.wifi.p2p.WifiP2pManager.Channel;
 import static android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 
-public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
+public class WiFiP2pReceiver extends BroadcastReceiver {
 
     private WifiP2pManager manager;
     private Channel channel;
@@ -46,8 +46,8 @@ public class WiFiDirectBroadcastReceiver extends BroadcastReceiver {
     };
 
 
-    public WiFiDirectBroadcastReceiver(WifiP2pManager manager, Channel channel,
-                                       DeviceListActivity activity) {
+    public WiFiP2pReceiver(WifiP2pManager manager, Channel channel,
+                           DeviceListActivity activity) {
         super();
         this.manager = manager;
         this.channel = channel;

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.kalymnos.skemelio.p2pchat.R;
-import gr.kalymnos.skemelio.p2pchat.mvc_model.WifiP2pUtilities;
-import gr.kalymnos.skemelio.p2pchat.mvc_model.WiFiDirectBroadcastReceiver;
+import gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct.WifiP2pUtilities;
+import gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct.WiFiP2pReceiver;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.device_list.DeviceListViewMvc;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.device_list.DeviceListViewMvcImp;
 
@@ -186,7 +186,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     private void initializeWifiReceiver() {
         manager = (WifiP2pManager) getSystemService(WIFI_P2P_SERVICE);
         channel = manager.initialize(this, getMainLooper(), this);
-        receiver = new WiFiDirectBroadcastReceiver(manager, channel, this);
+        receiver = new WiFiP2pReceiver(manager, channel, this);
     }
 
     private void addActionsToIntentFilter() {
