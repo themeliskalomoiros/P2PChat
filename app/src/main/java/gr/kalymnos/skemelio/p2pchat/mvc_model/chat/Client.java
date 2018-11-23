@@ -3,6 +3,7 @@ package gr.kalymnos.skemelio.p2pchat.mvc_model.chat;
 import android.util.Log;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Socket;
@@ -43,5 +44,16 @@ class Client extends Thread {
 
     void removeOnClientConnectionListener() {
         callback = null;
+    }
+
+    OutputStream getOutputStream() {
+        if (socket != null) {
+            try {
+                return socket.getOutputStream();
+            } catch (IOException e) {
+                Log.e(TAG, "Could not get output stream from socket", e);
+            }
+        }
+        return null;
     }
 }
