@@ -2,6 +2,7 @@ package gr.kalymnos.skemelio.p2pchat.mvc_model.chat;
 
 import android.content.Context;
 import android.content.Intent;
+import android.icu.util.Output;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
@@ -11,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InvalidClassException;
 import java.io.NotSerializableException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.net.InetAddress;
@@ -94,31 +97,29 @@ public abstract class ChatService {
     private class ChatMessageReceiver extends Thread {
         static final String TAG = "ChatMessageReceiver";
 
-        InputStream in;
-        byte[] buffer = new byte[1024];
+        ObjectInputStream objectIn;
 
-        ChatMessageReceiver(@NonNull Socket socket) {
+        ChatMessageReceiver(@NonNull InputStream in) {
             try {
-                in = socket.getInputStream();
+                objectIn = new ObjectInputStream(in);
             } catch (IOException e) {
-                Log.e(TAG, "Error occured when creating the input stream, " +
-                        "the socket is closed, " +
-                        "the socket is not connected, " +
-                        "or the socket input has been shutdown using shutdownInput()", e);
+                Log.e(TAG, "Error creating ObjectInputStream", e);
             }
         }
 
         @Override
         public void run() {
-            // Keep listening to the inputStream until an exception occurs.
+            // Keep listening to the stream until an exception occurs.
             while (true) {
                 try {
-                    in.read(buffer);
-                    // Broadcast the message locally, so stakeholders should be informed.
-                    broadcastMessage(createMessageFrom(buffer));
+                    Message message = (Message) objectIn.readObject();
+                    if (message != null)
+                        broadcastMessage(message);
                 } catch (IOException e) {
-                    Log.d(TAG, "Input stream was disconnected", e);
+                    Log.d(TAG, "Something went wrong with the stream.", e);
                     break;
+                } catch (ClassNotFoundException e) {
+                    Log.d(TAG, "Class of a serialized object cannot be found.", e);
                 }
             }
         }
@@ -135,26 +136,19 @@ public abstract class ChatService {
             intent.putExtras(extras);
             return intent;
         }
-
-        private Message createMessageFrom(byte[] buffer) {
-            String messageText = new String(buffer);
-            String sender = WifiP2pUtils.getDeviceBluetoothName(context.getContentResolver());
-            return new Message(messageText, sender);
-        }
     }
 
     private class ChatMessageSender extends Thread {
         private static final String TAG = "ChatMessageSender";
-        OutputStream out;
+        ObjectOutputStream objectOut;
         Message message;
 
-        ChatMessageSender(@NonNull Socket socket, Message message) {
+        ChatMessageSender(@NonNull OutputStream out, Message message) {
             try {
-                out = socket.getOutputStream();
+                objectOut = new ObjectOutputStream(out);
                 this.message = message;
             } catch (IOException e) {
-                Log.e(TAG, "An error occured when creating the output stream " +
-                        "or if the socket is not connected", e);
+                Log.e(TAG, "Error creating ObjectOutputStream.", e);
             }
         }
 
@@ -165,7 +159,6 @@ public abstract class ChatService {
 
         private void writeMessage() {
             try {
-                ObjectOutputStream objectOut = new ObjectOutputStream(out);
                 objectOut.writeObject(message);
             } catch (InvalidClassException e) {
                 Log.e(TAG, "Something is wrong with a class used by serialization.", e);
@@ -174,11 +167,11 @@ public abstract class ChatService {
             } catch (IOException e) {
                 Log.e(TAG, "Something went wrong with the OutputStream.", e);
             } finally {
-                if (out != null) {
+                if (objectOut != null) {
                     try {
-                        out.close();
+                        objectOut.close();
                     } catch (IOException e) {
-                        Log.e(TAG, "Could not close output stream.", e);
+                        Log.e(TAG, "Error closing the stream.", e);
                     }
                 }
             }
