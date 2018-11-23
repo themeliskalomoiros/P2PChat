@@ -12,8 +12,8 @@ import java.io.ObjectInputStream;
 
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
-public class MessageReceiver extends Thread {
-    private static final String TAG = "MessageReceiver";
+public class MessageReader extends Thread {
+    private static final String TAG = "MessageReader";
 
     interface OnMessageReceivedListener {
         void onMessageReceived(Message message);
@@ -22,7 +22,7 @@ public class MessageReceiver extends Thread {
     private ObjectInputStream objectIn;
     private OnMessageReceivedListener callback;
 
-    MessageReceiver(@NonNull InputStream in) {
+    MessageReader(@NonNull InputStream in) {
         try {
             objectIn = new ObjectInputStream(in);
         } catch (IOException e) {
