@@ -60,7 +60,6 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
     @Override
     public void onClientConnected(Socket socket) {
         startMessageReader(socket);
-        messageReader.start();
         startChatActivity();
     }
 
