@@ -59,7 +59,7 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
 
     @Override
     public void onClientConnected(Socket socket) {
-        initializeMessageReader(socket);
+        startMessageReader(socket);
         messageReader.start();
         startChatActivity();
     }
@@ -92,8 +92,7 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
 
     @Override
     public void onServerAcceptConnection(Socket socket) {
-        initializeMessageReader(socket);
-        messageReader.start();
+        startMessageReader(socket);
         startChatActivity();
     }
 
@@ -113,11 +112,12 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
         }
     }
 
-    private void initializeMessageReader(Socket socket) {
+    private void startMessageReader(Socket socket) {
         if (messageReader == null) {
             try {
                 messageReader = new MessageReader(socket.getInputStream());
                 messageReader.addOnMessageReceivedListener(this);
+                messageReader.start();
             } catch (IOException e) {
                 Log.e(TAG, "Error creating MessageReager", e);
             }
