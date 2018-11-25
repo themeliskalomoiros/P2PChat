@@ -71,7 +71,7 @@ class Server extends Thread {
 
     boolean areAllSocketsClosed() {
         for (Socket socket : sockets) {
-            if (!socket.isClosed()){
+            if (!socket.isClosed()) {
                 return false;
             }
         }
@@ -95,5 +95,10 @@ class Server extends Thread {
             return outs;
         }
         return null;
+    }
+
+    static void cleanInstance(Server server) {
+        server.interrupt();
+        server = null;
     }
 }

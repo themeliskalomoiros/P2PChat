@@ -66,4 +66,10 @@ public class MessageReader extends Thread {
     void removeOnMessageReceivedListener() {
         callback = null;
     }
+
+    static void cleanInstance(MessageReader reader) {
+        reader.interrupt();
+        reader.removeOnMessageReceivedListener();
+        reader = null;
+    }
 }

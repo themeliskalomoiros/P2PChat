@@ -131,4 +131,16 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
         intent.putExtras(extras);
         context.startActivity(intent);
     }
+
+    public void cleanChatResources() {
+        if (isClient()) {
+            MessageReader.cleanInstance(messageReader);
+            Client.cleanInstance(client);
+        } else if (isServer()) {
+            if (server.areAllSocketsClosed()) {
+                MessageReader.cleanInstance(messageReader);
+                Server.cleanInstance(server);
+            }
+        }
+    }
 }
