@@ -48,6 +48,8 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
             // to the group owner.
             Log.d(TAG, "Ready to start client...");
             service.startClient(groupOwnerAddress);
+        }else if(!info.groupFormed){
+            Log.d(TAG,"Group not formed yet");
         }
     };
 
