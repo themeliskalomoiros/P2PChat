@@ -18,7 +18,7 @@ class Server extends Thread {
     }
 
     private ServerSocket serverSocket = null;
-    private List<Socket> sockets = null; // Every common socket with every client connected to this server.
+    private List<Socket> sockets = new ArrayList<>(); // Every common socket with every client connected to this server.
     private OnServerAcceptConnectionListener callback;
 
     public Server() {
