@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gr.kalymnos.skemelio.p2pchat.R;
+import gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct.ToastActionListener;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct.WifiP2pUtils;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.wifi_direct.WiFiP2pReceiver;
 import gr.kalymnos.skemelio.p2pchat.mvc_views.device_list.DeviceListViewMvc;
@@ -37,18 +38,6 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
     private Channel channel;
     private boolean retryChannel = false;
     private boolean isWifiP2pEnabled = false;
-
-    private WifiP2pManager.ActionListener connectionInitiationListener = new WifiP2pManager.ActionListener() {
-        @Override
-        public void onSuccess() {
-            Toast.makeText(DeviceListActivity.this, "Initiated connection.", Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void onFailure(int reason) {
-            Toast.makeText(DeviceListActivity.this, WifiP2pUtils.getReasonText(reason), Toast.LENGTH_SHORT).show();
-        }
-    };
 
     private BroadcastReceiver receiver;
     private final IntentFilter filter = new IntentFilter();
@@ -88,19 +77,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
                     showToast("Wifi p2p is not enabled!");
                     return true;
                 }
-
-                manager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
-                    @Override
-                    public void onSuccess() {
-                        showToast("Discovery Initiated");
-                    }
-
-                    @Override
-                    public void onFailure(int reasonCode) {
-                        showLongToast("Discovery failed, reason code: " + reasonCode);
-                    }
-                });
-
+                manager.discoverPeers(channel, new ToastActionListener(this, "Device descovery initiated."));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -135,7 +112,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
              * except you create a new WifiP2pManager.ActionListener using createGroup()
              * instead of connect().
              * */
-            manager.connect(channel, config, connectionInitiationListener);
+            manager.connect(channel, config, new ToastActionListener(this, "Connection Initiated."));
         }
     }
 
