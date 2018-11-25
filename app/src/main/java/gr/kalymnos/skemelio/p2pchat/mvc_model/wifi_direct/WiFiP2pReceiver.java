@@ -61,33 +61,36 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
 
-        if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
-            // Check to see if Wi-Fi is enabled and notify appropriate activity
-            int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
-            activity.setIsWifiP2pEnabled(state == WifiP2pManager.WIFI_P2P_STATE_ENABLED);
-        } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-            // Call WifiP2pManager.requestPeers() to get a list of current peers
-            manager.requestPeers(channel, peerListListener);
-        } else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
-            // Respond to new connection or disconnections
-            if (manager == null) {
-                return;
-            }
+        switch (intent.getAction()) {
+            case WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION: // Check to see if Wi-Fi is enabled and notify appropriate activity
+                int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
+                activity.setIsWifiP2pEnabled(state == WifiP2pManager.WIFI_P2P_STATE_ENABLED);
+                break;
 
-            NetworkInfo networkInfo = intent
-                    .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+            case WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION: // Call WifiP2pManager.requestPeers() to get a list of current peers
+                manager.requestPeers(channel, peerListListener);
+                break;
 
-            if (networkInfo.isConnected()) {
-                // We are connected with the other device, request connection
-                // info to find group owner IP
-                manager.requestConnectionInfo(channel, connectionListener);
-            } else {
-                manager.discoverPeers(channel, null);
-            }
-        } else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-            // Respond to this device's wifi state changing
+            case WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION: // Respond to new connection or disconnections
+                if (manager == null) {
+                    return;
+                }
+
+                NetworkInfo networkInfo = intent
+                        .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+
+                if (networkInfo.isConnected()) {
+                    // We are connected with the other device, request connection
+                    // info to find group owner IP
+                    manager.requestConnectionInfo(channel, connectionListener);
+                } else {
+                    manager.discoverPeers(channel, null);
+                }
+                break;
+
+            case WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION: // Respond to this device's wifi state changing
+                break;
         }
     }
 }
