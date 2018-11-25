@@ -29,11 +29,9 @@ class Client extends Thread {
     @Override
     public void run() {
         try {
-            while (true) {
-                socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
-                break;
-            }
-            Log.d(TAG, "Connected to socket");
+            Log.d(TAG, "attemps to connect with server.");
+            socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
+            Log.d(TAG, "socket connected.");
             if (callback != null) {
                 callback.onClientConnected(socket);
             }
