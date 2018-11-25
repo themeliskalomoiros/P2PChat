@@ -32,7 +32,7 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
     private WifiP2pManager.ConnectionInfoListener connectionListener = (info) -> {
         // InetAddress from WifiP2pInfo struct.
         InetAddress groupOwnerAddress = info.groupOwnerAddress;
-        ChatService service = ChatService.getInstance(activity.getApplicationContext(),info);
+        ChatService service = ChatService.getInstance(activity.getApplicationContext(), info);
 
         // After the group negotiation, we can determine the group owner
         // (server).
@@ -40,13 +40,13 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
             // Do whatever tasks are specific to the group owner.
             // One common case is creating a group owner thread and accepting
             // incoming connections.
-            Log.d(TAG,"Ready to start server...");
+            Log.d(TAG, "Ready to start server...");
             service.startServer();
         } else if (info.groupFormed) {
             // The other device acts as the peer (client). In this case,
             // you'll want to create a peer thread that connects
             // to the group owner.
-            Log.d(TAG,"Ready to start client...");
+            Log.d(TAG, "Ready to start client...");
             service.startClient(groupOwnerAddress);
         }
     };
@@ -66,11 +66,7 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
             // Check to see if Wi-Fi is enabled and notify appropriate activity
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
-            if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
-                activity.setIsWifiP2pEnabled(true);
-            } else {
-                activity.setIsWifiP2pEnabled(false);
-            }
+            activity.setIsWifiP2pEnabled(state == WifiP2pManager.WIFI_P2P_STATE_ENABLED);
         } else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             // Call WifiP2pManager.requestPeers() to get a list of current peers
             manager.requestPeers(channel, peerListListener);
