@@ -66,22 +66,23 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
 
     public void send(String msg) {
         Message message = new Message(msg, WifiP2pUtils.getDeviceBluetoothName(context.getContentResolver()));
-        new MessageWriter(getCurrentOutputStream(), message).start();
-    }
-
-    /**
-     * The device can be a server or a client, not both.
-     */
-    private OutputStream getCurrentOutputStream() {
-        OutputStream out = null;
-        if (server != null && client == null) {
-            out = server.getOutputStream();
-        } else if (server == null && client != null) {
-            out = client.getOutputStream();
+        if (isServer()) {
+            for (OutputStream out : server.getAllOutputStreams()) {
+                new MessageWriter(out, message).start();
+            }
+        } else if (isClient()) {
+            new MessageWriter(client.getOutputStream(), message).start();
         } else {
             throw new UnsupportedOperationException(TAG + ": Don't know if this device is a server, a client, both or none.");
         }
-        return out;
+    }
+
+    private boolean isClient() {
+        return server == null && client != null;
+    }
+
+    private boolean isServer() {
+        return server != null && client == null;
     }
 
     @Override
