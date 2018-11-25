@@ -1,9 +1,11 @@
 package gr.kalymnos.skemelio.p2pchat.mvc_model.chat;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InterruptedIOException;
 
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
@@ -25,8 +27,9 @@ public class MessageReader extends Thread {
 
     @Override
     public void run() {
-        // Keep listening to the stream until an exception occurs.
-        while (true) {
+        // This thread supports its own interruption, if indeed interrupted it closes resources
+        while (!Thread.currentThread().isInterrupted()) {
+            // Keep listening to the stream until an exception occurs.
             try {
 
                 in.read(buffer);
@@ -39,8 +42,19 @@ public class MessageReader extends Thread {
                     callback.onMessageReceived(new Message(text, sender));
                 }
 
+            } catch (InterruptedIOException e) {
+                Log.d(TAG, "Interrupted, closing stream and exciting at the finally block.");
             } catch (IOException e) {
                 e.printStackTrace();
+            } finally {
+                if (in != null) {
+                    try {
+                        in.close();
+                    } catch (IOException e) {
+                        Log.e(TAG, "Could not close the stream");
+                    }
+                }
+                return;
             }
         }
     }
