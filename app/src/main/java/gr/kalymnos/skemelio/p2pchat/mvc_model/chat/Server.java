@@ -25,7 +25,6 @@ class Server extends Thread {
         initializeServerSocket();
     }
 
-
     @Override
     public void run() {
         while (true) {
@@ -68,6 +67,15 @@ class Server extends Thread {
 
     void addOnServerAcceptConnectionListener(OnServerAcceptConnectionListener listener) {
         callback = listener;
+    }
+
+    boolean areAllSocketsClosed() {
+        for (Socket socket : sockets) {
+            if (!socket.isClosed()){
+                return false;
+            }
+        }
+        return true;
     }
 
     void removeOnServerAcceptConnectionListener() {
