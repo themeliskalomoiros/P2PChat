@@ -17,18 +17,19 @@ class Client extends Thread {
     }
 
     private OnClientConnectionListener callback;
-    private Socket socket = new Socket();
+    private Socket socket;
     private InetAddress serverAddress; // The group owners address, he is the server.
 
     Client(InetAddress serverAddress) {
         this.serverAddress = serverAddress;
+        this.socket = new Socket();
+        bindSocket();
     }
 
     @Override
     public void run() {
-        bindSocket();
         try {
-            while (true){
+            while (true) {
                 socket.connect(new InetSocketAddress(serverAddress, Server.PORT), TIMEOUT_MILLI);
                 break;
             }
