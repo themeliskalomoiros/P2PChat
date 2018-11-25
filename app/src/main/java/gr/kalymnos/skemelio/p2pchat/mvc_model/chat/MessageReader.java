@@ -5,6 +5,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
@@ -15,14 +16,15 @@ public class MessageReader extends Thread {
         void onMessageReceived(Message message);
     }
 
-    private InputStream in;
-    private int len;
-    private byte[] buffer = new byte[1024];
-
+    private ObjectInputStream objIn;
     private OnMessageReceivedListener callback;
 
     public MessageReader(@NonNull InputStream in) {
-        this.in = in;
+        try {
+            objIn = new ObjectInputStream(in);
+        } catch (IOException e) {
+            Log.e(TAG, "Error creating ObjectInputStream", e);
+        }
     }
 
     @Override
@@ -30,19 +32,15 @@ public class MessageReader extends Thread {
         // Keep listening to the stream until an exception occurs.
         while (true) {
             try {
-                in.read(buffer);
-                String text = new String(buffer);
-
-                in.read(buffer);
-                String sender = new String(buffer);
-
-                Log.d(TAG, "Read message");
+                Message message = (Message) objIn.readObject();
                 if (callback != null) {
-                    callback.onMessageReceived(new Message(text,sender));
+                    callback.onMessageReceived(message);
                 }
+
+            } catch (ClassNotFoundException e) {
+                Log.e(TAG, "readObject() did not return a Message", e);
             } catch (IOException e) {
-                Log.d(TAG, "Something went wrong with the stream.", e);
-                break;
+                e.printStackTrace();
             }
         }
     }

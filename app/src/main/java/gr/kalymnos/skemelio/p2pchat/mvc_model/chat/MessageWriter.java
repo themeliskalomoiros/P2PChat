@@ -6,17 +6,22 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 
 import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
 public class MessageWriter extends Thread {
     private static final String TAG = "MessageWriter";
-    OutputStream out;
+    ObjectOutputStream objOut;
     Message message;
 
     MessageWriter(@NonNull OutputStream out, Message message) {
-        this.out = out;
+        try {
+            this.objOut = new ObjectOutputStream(out);
+        } catch (IOException e) {
+            Log.e(TAG, "Error creating ObjectOutputStream", e);
+        }
         this.message = message;
     }
 
@@ -27,8 +32,7 @@ public class MessageWriter extends Thread {
 
     private void writeMessage() {
         try {
-            out.write(message.getMessage().getBytes());
-            out.write(message.getSender().getBytes());
+            objOut.writeObject(message);
         } catch (InvalidClassException e) {
             Log.e(TAG, "Something is wrong with a class used by serialization.", e);
         } catch (NotSerializableException e) {
