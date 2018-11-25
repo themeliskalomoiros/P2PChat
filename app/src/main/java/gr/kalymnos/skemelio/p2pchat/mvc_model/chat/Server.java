@@ -16,7 +16,7 @@ class Server extends Thread {
     }
 
     private ServerSocket serverSocket = null;
-    private Socket socket = null;
+    private Socket socket = null;   // TODO: Remove this field.
     private OnServerAcceptConnectionListener callback;
 
     public Server() {
@@ -41,12 +41,6 @@ class Server extends Thread {
                 if (callback != null) {
                     callback.onServerAcceptConnection(socket);
                 }
-
-                try {
-                    serverSocket.close();
-                } catch (IOException e) {
-                    Log.d(TAG, "Could not close() the server socket");
-                }
             }
         }
     }
@@ -69,6 +63,7 @@ class Server extends Thread {
     }
 
     OutputStream getOutputStream() {
+        // TODO: Remove this method, when a client A gets a socket and then a Client B gets a socket, then if the Client A asks for its outputstream from here it will only take the ClientB socket.
         if (socket != null) {
             try {
                 return socket.getOutputStream();
