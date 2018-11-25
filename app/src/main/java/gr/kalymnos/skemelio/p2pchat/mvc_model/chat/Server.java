@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 class Server extends Thread {
     private static final String TAG = "Skemelio Server";
@@ -16,7 +18,7 @@ class Server extends Thread {
     }
 
     private ServerSocket serverSocket = null;
-    private Socket socket = null;   // TODO: Remove this field.
+    private List<Socket> sockets = null; // Every common socket with every client connected to this server.
     private OnServerAcceptConnectionListener callback;
 
     public Server() {
@@ -28,6 +30,9 @@ class Server extends Thread {
     public void run() {
         while (true) {
             /** Keep listening until exception occurs or a socket is returned.*/
+
+            Socket socket = null;
+
             try {
                 socket = serverSocket.accept();
                 Log.d(TAG, "accepted connection");
@@ -36,8 +41,15 @@ class Server extends Thread {
             }
 
             if (socket != null) {
-                // A connection was accepted. Perform work associated with the connection
-                // in a seperate thread.
+                // A connection was accepted.
+
+                /*
+                 * Keep track of all the sockets so if you want to send a message,
+                 * send it through every socket, so all clients get that message
+                 * (common chat room between server and all of its clients).
+                 * */
+                sockets.add(socket); //
+
                 if (callback != null) {
                     callback.onServerAcceptConnection(socket);
                 }
@@ -62,14 +74,17 @@ class Server extends Thread {
         callback = null;
     }
 
-    OutputStream getOutputStream() {
-        // TODO: Remove this method, when a client A gets a socket and then a Client B gets a socket, then if the Client A asks for its outputstream from here it will only take the ClientB socket.
-        if (socket != null) {
+    List<OutputStream> getAllOutputStreams() {
+        if (sockets != null && sockets.size() > 0) {
+            List<OutputStream> outs = new ArrayList<>();
             try {
-                return socket.getOutputStream();
+                for (Socket socket : sockets) {
+                    outs.add(socket.getOutputStream());
+                }
             } catch (IOException e) {
                 Log.e(TAG, "Could not get output stream from socket", e);
             }
+            return outs;
         }
         return null;
     }
