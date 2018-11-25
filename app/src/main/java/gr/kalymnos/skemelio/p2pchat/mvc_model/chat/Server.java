@@ -19,12 +19,15 @@ class Server extends Thread {
     private Socket socket = null;
     private OnServerAcceptConnectionListener callback;
 
+    public Server() {
+        initializeServerSocket();
+    }
+
+
     @Override
     public void run() {
-        /** Keep listening until exception occurs or a socket is returned.*/
-        initializeServerSocket();
-
         while (true) {
+            /** Keep listening until exception occurs or a socket is returned.*/
             try {
                 socket = serverSocket.accept();
                 Log.d(TAG, "accepted connection");
