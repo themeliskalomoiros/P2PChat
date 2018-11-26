@@ -28,7 +28,6 @@ public class MessageReader extends Thread {
 
     @Override
     public void run() {
-        // This thread supports its own interruption, if indeed interrupted it closes resources
         while (!Thread.currentThread().isInterrupted()) {
             // Keep listening to the stream until an exception occurs.
             try {
@@ -51,6 +50,7 @@ public class MessageReader extends Thread {
                 if (!Thread.currentThread().isInterrupted() && in != null) {
                     try {
                         in.close();
+                        Log.d(TAG,"MessageReader closed the socket in finally block.");
                     } catch (IOException e) {
                         Log.e(TAG, "Could not close the stream");
                     }
