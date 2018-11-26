@@ -57,12 +57,6 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
         return intent;
     }
 
-    @Override
-    public void onClientConnected(Socket socket) {
-        startMessageReader(socket);
-        startChatActivity();
-    }
-
     public void send(String msg) {
         Message message = new Message(msg, WifiP2pUtils.getDeviceBluetoothName(context.getContentResolver()));
         if (isServer()) {
@@ -91,6 +85,12 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
 
     @Override
     public void onServerAcceptConnection(Socket socket) {
+        startMessageReader(socket);
+        startChatActivity();
+    }
+
+    @Override
+    public void onClientConnected(Socket socket) {
         startMessageReader(socket);
         startChatActivity();
     }

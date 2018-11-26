@@ -18,7 +18,6 @@ public class MessageReader extends Thread {
     }
 
     private InputStream in;
-    private int len;
     private byte[] buffer = new byte[1024];
     private OnMessageReceivedListener callback;
 
