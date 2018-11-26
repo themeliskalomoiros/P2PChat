@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pInfo;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +31,7 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
     private String username;
     private WifiP2pInfo info;
 
+    private ChatService chatService;
     private List<Message> messages = new ArrayList<>();
     private final IntentFilter messageIntentFilter = new IntentFilter();
     private BroadcastReceiver messageReceiver = new BroadcastReceiver() {
@@ -51,6 +53,7 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
         username = getIntent().getStringExtra(EXTRA_DEVICE_NAME);
         info = getIntent().getParcelableExtra(EXTRA_WIFI_P2P_INFO);
         messageIntentFilter.addAction(ACTION_MESSAGE_RECEIVED);
+        chatService = ChatService.getInstance(this, getIntent().getParcelableExtra(EXTRA_WIFI_P2P_INFO));
         setupUi();
     }
 
@@ -67,9 +70,14 @@ public class ChatActivity extends AppCompatActivity implements ChatViewMvc.OnSen
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        chatService.cleanChatResources();
+    }
+
+    @Override
     public void onSendClicked(String msg) {
-        ChatService.getInstance(this, getIntent().getParcelableExtra(EXTRA_WIFI_P2P_INFO))
-                .send(msg);
+        chatService.send(msg);
     }
 
     private void setupUi() {
