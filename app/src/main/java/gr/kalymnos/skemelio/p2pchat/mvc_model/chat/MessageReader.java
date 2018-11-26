@@ -28,11 +28,10 @@ public class MessageReader extends Thread {
 
     @Override
     public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            // Keep listening to the stream until an exception occurs.
-            try {
+        try {
+            while (!Thread.currentThread().isInterrupted()) {
+                // Keep listening to the stream until an exception occurs.
                 if (callback != null) {
-
                     in.read(buffer);
                     String text = new String(buffer);
 
@@ -40,26 +39,27 @@ public class MessageReader extends Thread {
                     String sender = new String(buffer);
 
                     callback.onMessageReceived(new Message(text, sender));
-                }else {
-                    throw new UnsupportedOperationException(TAG+" callback is null.");
+                } else {
+                    throw new UnsupportedOperationException(TAG + " callback is null.");
                 }
-
-            } catch (InterruptedIOException e) {
-                Log.d(TAG, "Interrupted, closing stream and exciting at the finally block.");
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                if (!Thread.currentThread().isInterrupted() && in != null) {
-                    try {
-                        in.close();
-                        Log.d(TAG, "MessageReader closed the socket in finally block.");
-                    } catch (IOException e) {
-                        Log.e(TAG, "Could not close the stream");
-                    }
-                }
-                return;
             }
+        } catch (InterruptedIOException e) {
+            Log.d(TAG, "Interrupted, closing stream and exciting at the finally block.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (!Thread.currentThread().isInterrupted() && in != null) {
+                try {
+                    in.close();
+                    Log.d(TAG, "MessageReader closed the socket in finally block.");
+                } catch (IOException e) {
+                    Log.e(TAG, "Could not close the stream");
+                }
+            }
+            return;
         }
+
+
     }
 
     void addOnMessageReceivedListener(OnMessageReceivedListener listener) {
