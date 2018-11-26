@@ -37,16 +37,12 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
             // Do whatever tasks are specific to the group owner.
             // One common case is creating a group owner thread and accepting
             // incoming connections.
-            Log.d(TAG, "Ready to start server...");
             service.startServer();
         } else if (info.groupFormed) {
             // The other device acts as the peer (client). In this case,
             // you'll want to create a peer thread that connects
             // to the group owner.
-            Log.d(TAG, "Ready to start client...");
             service.startClient(groupOwnerAddress);
-        } else if (!info.groupFormed) {
-            Log.d(TAG, "Group not formed yet");
         }
     };
 
