@@ -76,6 +76,8 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
                         // We are connected with the other device, request connection
                         // info to find group owner IP
                         manager.requestConnectionInfo(channel, connectionListener);
+                    }else{
+                        manager.discoverPeers(channel,new ToastActionListener(activity,"Initiate peer discovery"));
                     }
                 }
 
