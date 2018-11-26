@@ -100,9 +100,4 @@ class Server extends Thread {
         }
         return null;
     }
-
-    static void cleanInstance(Server server) {
-        server.interrupt();
-        server = null;
-    }
 }
