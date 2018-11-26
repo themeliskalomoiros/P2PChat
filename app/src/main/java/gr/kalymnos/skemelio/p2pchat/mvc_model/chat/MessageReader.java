@@ -47,7 +47,7 @@ public class MessageReader extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                if (in != null) {
+                if (!Thread.currentThread().isInterrupted() && in != null) {
                     try {
                         in.close();
                     } catch (IOException e) {
