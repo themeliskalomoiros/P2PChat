@@ -4,14 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
-import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
-import android.os.Bundle;
 import android.util.Log;
 
 import java.net.InetAddress;
 
-import gr.kalymnos.skemelio.p2pchat.mvc_controllers.ChatActivity;
 import gr.kalymnos.skemelio.p2pchat.mvc_controllers.DeviceListActivity;
 import gr.kalymnos.skemelio.p2pchat.mvc_model.chat.ChatService;
 
@@ -48,8 +45,8 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
             // to the group owner.
             Log.d(TAG, "Ready to start client...");
             service.startClient(groupOwnerAddress);
-        }else if(!info.groupFormed){
-            Log.d(TAG,"Group not formed yet");
+        } else if (!info.groupFormed) {
+            Log.d(TAG, "Group not formed yet");
         }
     };
 
@@ -75,20 +72,17 @@ public class WiFiP2pReceiver extends BroadcastReceiver {
                 break;
 
             case WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION: // Respond to new connection or disconnections
-                if (manager == null) {
-                    return;
+                if (manager != null) {
+                    NetworkInfo networkInfo = intent
+                            .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
+
+                    if (networkInfo.isConnected()) {
+                        // We are connected with the other device, request connection
+                        // info to find group owner IP
+                        manager.requestConnectionInfo(channel, connectionListener);
+                    }
                 }
 
-                NetworkInfo networkInfo = intent
-                        .getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-
-                if (networkInfo.isConnected()) {
-                    // We are connected with the other device, request connection
-                    // info to find group owner IP
-                    manager.requestConnectionInfo(channel, connectionListener);
-                } else {
-                    manager.discoverPeers(channel, null);
-                }
                 break;
 
             case WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION: // Respond to this device's wifi state changing
