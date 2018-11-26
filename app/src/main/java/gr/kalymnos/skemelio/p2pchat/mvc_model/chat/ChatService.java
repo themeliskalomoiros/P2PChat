@@ -133,6 +133,18 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
     }
 
     public void cleanChatResources() {
+        /**
+         * Must close first the reader because it closes its own inputstream
+         * that came from a Socket, thus, closing the socket.
+         *
+         * (In order to close stream and not close socket we must call
+         * socket.shutdownInput();)
+         * */
+        messageReader.interrupt();
+        messageReader.removeOnMessageReceivedListener();
+        messageReader = null;
+        --MessageReader.instanceCounter;
+
         if (isClient()) {
             client.removeOnClientConnectionListener();
             client = null;
@@ -142,9 +154,5 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
             server = null;
             --Server.instanceCounter;
         }
-        messageReader.interrupt();
-        messageReader.removeOnMessageReceivedListener();
-        messageReader = null;
-        --MessageReader.instanceCounter;
     }
 }
