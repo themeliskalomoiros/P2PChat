@@ -48,7 +48,7 @@ public class MessageReader extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (!Thread.currentThread().isInterrupted() && in != null) {
+            if (in != null) {
                 try {
                     in.close();
                     Log.d(TAG, "MessageReader closed the socket in finally block.");
