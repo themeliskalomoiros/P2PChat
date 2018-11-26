@@ -136,12 +136,15 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
         if (isClient()) {
             client.removeOnClientConnectionListener();
             client = null;
+            --Client.instanceCounter;
         } else if (isServer() && server.areAllSocketsClosed()) {
             server.removeOnServerAcceptConnectionListener();
             server = null;
+            --Server.instanceCounter;
         }
         messageReader.interrupt();
         messageReader.removeOnMessageReceivedListener();
         messageReader = null;
+        --MessageReader.instanceCounter;
     }
 }

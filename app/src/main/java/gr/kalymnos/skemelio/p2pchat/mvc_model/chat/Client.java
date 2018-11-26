@@ -11,6 +11,7 @@ import java.net.Socket;
 class Client extends Thread {
     private static final String TAG = "Skemelio Client";
     private static final int TIMEOUT_MILLI = 2000;
+    static volatile int instanceCounter = 0;
 
     interface OnClientConnectionListener {
         void onClientConnected(Socket socket);
@@ -21,6 +22,7 @@ class Client extends Thread {
     private InetAddress serverAddress; // The group owners address, he is the server.
 
     Client(InetAddress serverAddress) {
+        Log.d(TAG,"Created instance"+(++instanceCounter));
         this.serverAddress = serverAddress;
         this.socket = new Socket();
         bindSocket();

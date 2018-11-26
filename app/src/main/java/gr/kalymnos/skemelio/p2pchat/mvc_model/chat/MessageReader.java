@@ -11,6 +11,7 @@ import gr.kalymnos.skemelio.p2pchat.pojos.Message;
 
 public class MessageReader extends Thread {
     private static final String TAG = "Skemelio MessageReader";
+    static volatile int instanceCounter = 0;
 
     interface OnMessageReceivedListener {
         void onMessageReceived(Message message);
@@ -22,6 +23,7 @@ public class MessageReader extends Thread {
     private OnMessageReceivedListener callback;
 
     public MessageReader(@NonNull InputStream in) {
+        Log.d(TAG,"Created instance"+(++instanceCounter));
         this.in = in;
     }
 

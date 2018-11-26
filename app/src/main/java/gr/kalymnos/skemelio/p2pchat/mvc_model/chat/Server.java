@@ -12,8 +12,7 @@ import java.util.List;
 class Server extends Thread {
     private static final String TAG = "Skemelio Server";
     static final int PORT = 8888;
-
-    private static volatile int instanceCounter = 0;
+    static volatile int instanceCounter = 0;
 
     interface OnServerAcceptConnectionListener {
         void onServerAcceptConnection(Socket socket);
