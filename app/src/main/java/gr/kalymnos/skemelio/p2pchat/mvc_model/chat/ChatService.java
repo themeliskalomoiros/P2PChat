@@ -134,13 +134,14 @@ public class ChatService implements Server.OnServerAcceptConnectionListener,
 
     public void cleanChatResources() {
         if (isClient()) {
-            MessageReader.cleanInstance(messageReader);
-            Client.cleanInstance(client);
-        } else if (isServer()) {
-            if (server.areAllSocketsClosed()) {
-                MessageReader.cleanInstance(messageReader);
-                Server.cleanInstance(server);
-            }
+            client.removeOnClientConnectionListener();
+            client = null;
+        } else if (isServer() && server.areAllSocketsClosed()) {
+            server.removeOnServerAcceptConnectionListener();
+            server = null;
         }
+        messageReader.interrupt();
+        messageReader.removeOnMessageReceivedListener();
+        messageReader = null;
     }
 }

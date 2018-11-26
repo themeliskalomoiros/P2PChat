@@ -13,6 +13,8 @@ class Server extends Thread {
     private static final String TAG = "Skemelio Server";
     static final int PORT = 8888;
 
+    private static volatile int instanceCounter = 0;
+
     interface OnServerAcceptConnectionListener {
         void onServerAcceptConnection(Socket socket);
     }
@@ -22,6 +24,7 @@ class Server extends Thread {
     private OnServerAcceptConnectionListener callback;
 
     public Server() {
+        Log.d(TAG,"Created instance"+(++instanceCounter));
         initializeServerSocket();
     }
 
@@ -34,7 +37,7 @@ class Server extends Thread {
 
             try {
                 socket = serverSocket.accept();
-                Log.d(TAG, "accepted connection");
+                Log.d(TAG, "Serversocket accepted connection");
             } catch (IOException e) {
                 Log.e(TAG, "Error accepting a client", e);
             }
@@ -47,6 +50,7 @@ class Server extends Thread {
                  * send it through every socket, so all clients get that message
                  * (common chat room between server and all of its clients).
                  * */
+                Log.d(TAG,"Socket acceptet from server is not null.");
                 sockets.add(socket); //
 
                 if (callback != null) {

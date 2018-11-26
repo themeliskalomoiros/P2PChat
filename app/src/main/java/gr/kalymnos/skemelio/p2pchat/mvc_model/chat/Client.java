@@ -66,9 +66,4 @@ class Client extends Thread {
         }
         return null;
     }
-
-    static void cleanInstance(Client client) {
-        client.removeOnClientConnectionListener();
-        client = null;
-    }
 }
