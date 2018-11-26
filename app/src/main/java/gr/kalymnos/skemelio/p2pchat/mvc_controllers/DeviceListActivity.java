@@ -92,7 +92,7 @@ public class DeviceListActivity extends AppCompatActivity implements DeviceListV
                 if (device.status == WifiP2pDevice.AVAILABLE){
                     connectTo(device);
                 }else if (device.status == WifiP2pDevice.CONNECTED){
-                    manager.cancelConnect(channel,new ToastActionListener(this,"Initiated canceled connection"));
+                    manager.removeGroup(channel,new ToastActionListener(this,"Initiated removing group."));
                 }
             }
         }
